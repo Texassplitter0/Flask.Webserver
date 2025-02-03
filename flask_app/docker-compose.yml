@@ -12,8 +12,6 @@ services:
     depends_on:
       db:
         condition: service_healthy  # Wartet, bis MySQL bereit ist
-    volumes:
-      - .:/app
   
   db:
     image: mysql:latest

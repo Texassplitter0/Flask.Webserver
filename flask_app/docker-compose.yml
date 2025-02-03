@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "10100:10100"
     environment:
       - FLASK_ENV=development
       - MYSQL_HOST=db

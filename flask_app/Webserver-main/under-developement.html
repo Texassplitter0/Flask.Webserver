@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Developement</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: grid;
+            grid-template-rows: 1fr auto; /* Die Box wird in der letzten Reihe angezeigt */
+            text-align: center;
+            background-image: url('images/background-under-developement.webp');
+            background-size: cover; /* Passt das Bild an, um den gesamten Bildschirm zu füllen */
+            background-position: center; /* Zentriert das Bild */
+            background-repeat: no-repeat; /* Verhindert Wiederholungen des Bildes */
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            position: fixed;
+            bottom: 0; /* Setzt die Box an den unteren Rand */
+            background-color: rgba(0, 0, 0, 0);
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Halbtransparente Überlagerung für besseren Kontrast */
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 600px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            position: fixed; /* Fixiert den Footer am unteren Bildschirmrand */
+            bottom: 0;
+            width: 100%; /* Lässt den Footer die gesamte Breite einnehmen */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="welcome.html">Home</a>
+        <a href="minecraft.html">Minecraft Server</a>
+        <a href="gamedivers.html">GameDivers</a>
+        <a href="memecoin.html">Memecoin</a>
+        <a href="under-developement.html">Login</a>
+    </nav>
+    
+    <!-- Header -->
+    <header>
+        <h1>Under Developement</h1>
+        <h2>Der Spieß braucht noch. Bitte habe Geduld</h2>
+    </header>
+
+    <main>
+        <div class="box" style= "text-align: center";>
+            <h1>Wir Arbeiten unermüdlich daran unsere Community und Dienste zu Verbessern</h1>
+            <p>Ihr seit der Pfeiler unserer Community.</p>
+        </div>
+    </main>
+
+    <!-- Fußzeile für Impressum-->
+    <footer>
+        <p>&copy; 2025 Döner-Website | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+    </footer>
+    
+</body>
+</html>

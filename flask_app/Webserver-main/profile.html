@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <style>
+        /* Profil Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+        .box {
+            background-color: #333;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 20px auto;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .box h1 {
+            text-align: center;
+            color: #FFD700;
+        }
+        .box button {
+            background-color: #FFD700;
+            color: #333;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .box button:hover {
+            background-color: #e6c300;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="welcome.html">Home</a>
+        <a href="minecraft.html">Minecraft Server</a>
+        <a href="gamedivers.html">GameDivers</a>
+        <a href="memecoin.html">Memecoin</a>
+        <a href="login.html">Login</a>
+    </nav>
+
+    <div class="box">
+        <h1>Willkommen, <span id="username-display"></span></h1>
+        <p>Sie sind erfolgreich eingeloggt.</p>
+        <button id="logoutButton">Abmelden</button>
+    </div>
+
+    <script>
+        // Überprüfen, ob der Benutzer eingeloggt ist
+        const token = localStorage.getItem('token');
+        const usernameDisplay = document.getElementById('username-display');
+        const logoutButton = document.getElementById('logoutButton');
+
+        if (token) {
+            // Decodieren des Tokens (mit jwt-decode oder manuell)
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // Sehr vereinfacht, keine Sicherheit
+            usernameDisplay.textContent = decodedToken.username;
+
+            logoutButton.addEventListener('click', () => {
+                // Token löschen und zurück zum Login
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+        } else {
+            window.location.href = 'login.html'; // Weiterleitung zu Login, falls nicht eingeloggt
+        }
+    </script>
+
+    <!-- Fußzeile für Impressum-->
+    <footer>
+        <p>&copy; 2025 Döner-Website | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+    </footer>
+
+</body>
+</html>

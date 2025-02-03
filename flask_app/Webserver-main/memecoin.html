@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemeCoin</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            background-image: url('images/background-memecoin.webp');
+            background-size: cover; /* Passt das Bild an, um den gesamten Bildschirm zu füllen */
+            background-position: center; /* Zentriert das Bild */
+            background-repeat: no-repeat; /* Verhindert Wiederholungen des Bildes */
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #333;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 80px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Halbtransparente Überlagerung für besseren Kontrast */
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        .box img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .box h2, .box p {
+            margin: 10px 0;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="welcome.html">Home</a>
+        <a href="minecraft.html">Minecraft Server</a>
+        <a href="gamedivers.html">GameDivers</a>
+        <a href="memecoin.html">Memecoin</a>
+        <a href="under-developement.html">Login</a>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>MemeCoin</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Infobox 1: "Was ist DönerCoin?" -->
+        <div class="box" style="background-image: url('images/background-memecoin-info1.webp');">
+            <h2>Was ist DönerCoin?</h2>
+            <p>Ein einzigartiger Memecoin, der Spaß mit Kryptowährungen kombiniert. Ideal für Sammler und Fans.</p>
+        </div>
+        
+        <!-- Infobox 2: "Vorteile" -->
+        <div class="box" style="background-image: url('images/background-memecoin-vorteile.webp');">
+            <h2>Vorteile</h2>
+            <p>Dezentral, sicher und unterhaltsam. Mit DönerCoin können Sie Teil einer aufstrebenden Community werden.</p>
+        </div>
+        
+        <!-- Infobox 3: "Besuchen sie uns" -->
+        <div class="box" style="background-image: url('images/background-memecoin-Discord.webp');">
+            <h2>Besuchen Sie uns auf Discord</h2>
+            <p>Diskutieren Sie mit anderen Krypto-Enthusiasten und bleiben Sie auf dem Laufenden.</p>
+            <a href="https://discord.gg/ihre-invite-id" target="_blank"><strong>Discord-Server</strong></a>
+        </div>
+    </main>
+
+    <!-- Fußzeile für Impressum-->
+    <footer>
+        <p>&copy; 2025 Döner-Website | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+    </footer>
+
+</body>
+</html>

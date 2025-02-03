@@ -1,0 +1,33 @@
+services:
+  app:
+    build:
+      context: .
+#      dockerfile: dockerfile
+#    ports:
+#      - "3030:3030" # Passe die Ports an, falls notwendig
+    environment:
+      - EXAMPLE_ENV_VAR=value
+    labels:
+      - "traefik.enable=true"
+ 
+      # HTTP Router
+      - "traefik.http.routers.kebab.entrypoints=http"
+      - "traefik.http.routers.kebab.rule=Host(`kebab.xn--dnerhub-90a.de`)"
+      - "traefik.http.services.kebab.loadbalancer.server.port=80"
+      - "traefik.docker.network=main"
+ 
+      # HTTPS Router
+      - "traefik.http.routers.kebab-secure.entrypoints=https"
+      - "traefik.http.routers.kebab-secure.rule=Host(`kebab.xn--dnerhub-90a.de`)"
+      - "traefik.http.routers.kebab-secure.tls=true"
+      - "traefik.http.routers.kebab-secure.service=kebab"
+      - "traefik.http.routers.kebab-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.kebab-secure.tls.domains[0].main=xn--dnerhub-90a.de"
+      - "traefik.http.routers.kebab-secure.tls.domains[0].sans=*.xn--dnerhub-90a.de"
+ 
+    networks:
+      - main
+ 
+networks:
+  main:
+    external: true

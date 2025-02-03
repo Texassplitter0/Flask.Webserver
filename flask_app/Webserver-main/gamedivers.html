@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Server</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            background-image: url('images/background-gamedivers.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #242424;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 80px;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .box nav {
+            display: flex;
+            justify-content: center;
+            background-color: transparent;
+            padding: 10px 0;
+            top: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .box2 {
+            background-color: #242424;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 80px;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-size: cover;
+            background-position: bottom;
+            position: relative;
+        }
+        .box2 nav {
+            display: flex;
+            justify-content: center;
+            background-color: transparent;
+            padding: 10px 0;
+            top: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .box h2, .box2 h2 {
+            background-color: rgba(51, 51, 51, 0.8);
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: #FFD700;
+            display: inline-block;
+            margin: 0;
+            text-align: center;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        .cta {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #333;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .cta:hover {
+            background-color: #ffb700;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="welcome.html">Home</a>
+        <a href="minecraft.html">Minecraft Server</a>
+        <a href="gamedivers.html">GameDivers</a>
+        <a href="memecoin.html">Memecoin</a>
+        <a href="under-developement.html">Login</a>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>GameDivers</h1>
+        <h1>Die Seite für alle die etwas neues suchen</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!--Helldivers-->
+        <div class="box" style="background-image: url('images/background-helldivers-info.webp');">
+            <nav>
+                <a href="helldivers.html"><h2>Helldivers 2</h2></a>
+            </nav>
+            <p>Für alle die Über-Erde verteidigen wollen.</p>
+            <iframe src="https://steamdb.info/embed/?appid=553850" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
+        </div>
+
+        <!--Space Engineers-->
+        <div class="box" style="background-image: url('images/background-spaceengineers.webp');">
+            <nav>
+                <a href="spaceengineers.html"><h2>Space Engineers</h2></a>
+            </nav>
+            <p>Für Liebhaber.</p>
+            <iframe src="https://steamdb.info/embed/?appid=244850" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
+        </div>
+
+        <!--Space Engineers 2-->
+        <div class="box" style="background-image: url('images/background-spaceengineers2.webp');">
+            <nav>
+                <a href="spaceengineerstwo.html"><h2>Space Engineers 2</h2></a>
+            </nav>
+            <p>Alpha Release.</p>
+            <iframe src="https://steamdb.info/embed/?appid=1133870" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
+        </div>
+
+        <!--Pallworld-->
+        <div class="box" style="background-image: url('images/background-pallworld.webp');">
+            <nav>
+                <a href="palworld.html"><h2>Palworld</h2></a>
+            </nav>
+            <p>Perfekt für alle die auf Waffen stehen.</p>
+            <iframe src="https://steamdb.info/embed/?appid=1623730" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
+        </div>
+
+        <!--Satisfactory-->
+        <div class="box" style="background-image: url('images/background-satisfactory.webp');">
+            <nav>
+                <a href="satisfactory.html"><h2>Satisfactory</h2></a>
+            </nav>
+            <p>Perfekt für alle die auf Waffen stehen.</p>
+            <iframe src="https://steamdb.info/embed/?appid=526870" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
+        </div>
+
+        <!--Discord-->
+        <div class="box2" style="background-image: url('images/community-bg-gamedivers.webp');">
+            <nav>
+                <h2>Community</h2>
+            </nav>
+            <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
+            <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
+        </div>
+    </main>
+
+    <!-- Fußzeile für Impressum-->
+    <footer>
+        <p>&copy; 2025 Döner-Website | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a></p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+        <p>DönerHub.de is a hobby project and is not affiliated with Valve, Steam or SteamDB. All times on the site are UTC</p>
+        <p>Steam and the Steam logo are trademarks of Valve Corporation. All other trademarks are property of their respective owners.</p>
+    </footer>
+
+</body>
+</html>

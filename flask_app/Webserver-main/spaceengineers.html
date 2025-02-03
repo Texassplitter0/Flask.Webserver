@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Engineers</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            background-image: url('images/BG-Spaceengineers.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #333;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 80px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 600px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        .cta {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #333;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .cta:hover {
+            background-color: #ffb700;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="welcome.html">Home</a>
+        <a href="minecraft.html">Minecraft Server</a>
+        <a href="gamedivers.html">GameDivers</a>
+        <a href="memecoin.html">Memecoin</a>
+        <a href="under-developement.html">Login</a>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>Space Engineers</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="box" style="background-image: url('images/BG-Spaceengineers-Dönerspieß.webp');">
+            <h2>Live-Details</h2>
+            <div id="server-status">
+                <h3>Spieler online: <span id="player-count">Lädt...</span></h3>
+            </div>
+        </div>
+        <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
+            <h2>Community</h2>
+            <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
+            <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
+        </div>
+    </main>
+
+    <!-- Fußzeile für Impressum-->
+    <footer>
+        <p>&copy; 2025 Döner-Website | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+        <p>Space Engineers Space Engineers® and VRAGE™ are trademarks of Keen Software House.</p>
+    </footer>
+
+</body>
+</html>

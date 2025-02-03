@@ -1,0 +1,44 @@
+# Flask Webserver mit MySQL
+
+Dieses Projekt ist ein einfacher Webserver mit Flask, der eine Benutzerverwaltung beinhaltet. Es unterstützt Login, Admin-Funktionalität und Rollenverwaltung.
+
+## Installation & Setup
+
+### 1. Abhängigkeiten installieren
+```
+pip install -r requirements.txt
+```
+
+### 2. Datenbank einrichten
+Falls du Docker nutzt, starte MySQL mit:
+```
+docker-compose up -d db
+```
+Oder richte eine MySQL-Datenbank manuell mit `init.sql` ein.
+
+### 3. Anwendung starten
+```
+python app.py
+```
+
+## Docker verwenden
+Um die gesamte Anwendung in Docker auszuführen:
+```
+docker-compose up --build
+```
+
+## Standard Admin-Login
+- **Benutzername:** `admin`
+- **Passwort:** *Vordefiniert in der Datenbank (gehashed)*
+
+## Verzeichnisstruktur
+```
+/flask_app
+│── /Webserver-main        # Enthält alle relevanten HTML-Templates
+│── /static                # (Optional) für CSS, JS, Bilder
+│── app.py                 # Haupt-Flask-Anwendung
+│── requirements.txt        # Python-Abhängigkeiten
+│── Dockerfile              # Dockerfile für Flask-App
+│── docker-compose.yml      # Docker-Setup für Flask & MySQL
+│── init.sql                # Datenbank-Initialisierung
+│── README.md               # Projektbeschreibung

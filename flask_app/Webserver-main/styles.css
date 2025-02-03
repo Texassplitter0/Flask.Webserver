@@ -1,0 +1,95 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+    background-image: url('images/background-index.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Navigation Styles */
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #000000;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav a {
+    color: #FFD700;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+/* Header Styles */
+header {
+    background-color: #FFD700;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    color: #000000;
+    font-size: 3.5em;
+}
+
+header p {
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+
+/* Info Boxes */
+.info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.info-box .box {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 40px;
+    width: 80%;
+    max-width: 600px;
+    color: #FFD700;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    height: 300px;
+}
+
+.info-box .box h2 {
+    margin-top: 0;
+    color: #FFD700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.info-box .box p {
+    margin: 10px 0;
+    color: #fff;
+    cursor: default;
+}
+
+footer {
+    background-color: #000000;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}

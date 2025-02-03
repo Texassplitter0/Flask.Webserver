@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <h2>Benutzerverwaltung</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Benutzername</th>
+            <th>Rolle</th>
+            <th>Aktionen</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <a href="{{ url_for('edit_user', user_id=user.id) }}">Bearbeiten</a>
+                <a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('Benutzer wirklich löschen?');">Löschen</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <h2>Neuen Benutzer hinzufügen</h2>
+    <form method="POST">
+        <label>Benutzername:</label>
+        <input type="text" name="username" required>
+        <label>Passwort:</label>
+        <input type="password" name="password" required>
+        <label>Rolle:</label>
+        <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+        </select>
+        <button type="submit">Hinzufügen</button>
+    </form>
+    <br>
+    <a href="{{ url_for('welcome') }}">Zurück zur Startseite</a>
+</body>
+</html>

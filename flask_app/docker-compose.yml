@@ -11,8 +11,6 @@ services:
       - MYSQL_DATABASE=flask_app
     depends_on:
       - db
-    volumes:
-      - .:/app
   
   db:
     image: mysql:latest

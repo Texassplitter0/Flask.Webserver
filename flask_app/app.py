@@ -5,13 +5,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
+import os
+
 def get_db_connection():
     return mysql.connector.connect(
-        host='localhost',
-        user='your_user',
-        password='your_password',
-        database='your_database'
+        host=os.getenv('MYSQL_HOST', 'db'),  # Richtig für Docker
+        user=os.getenv('MYSQL_USER', 'root'),
+        password=os.getenv('MYSQL_PASSWORD', 'rootpassword'),
+        database=os.getenv('MYSQL_DATABASE', 'flask_app')
     )
+
 
 def create_database():
     conn = get_db_connection()

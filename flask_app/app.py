@@ -11,7 +11,7 @@ def get_db_connection():
     """Stellt eine Verbindung zur MySQL-Datenbank her"""
     return mysql.connector.connect(
         host=os.getenv('MYSQL_HOST', 'db'),  # Richtig für Docker
-        user=os.getenv('MYSQL_USER', 'root'),
+        user=os.getenv('MYSQL_USER', 'flask_user'),
         password=os.getenv('MYSQL_PASSWORD', 'rootpassword'),
         database=os.getenv('MYSQL_DATABASE', 'flask_app')
     )

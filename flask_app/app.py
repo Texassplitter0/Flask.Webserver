@@ -167,13 +167,15 @@ def edit_user(user_id):
     
     return redirect(url_for('index'))
 
+# Generische Routen für statische HTML-Seiten (ohne edit_user)
 static_pages = [
-    "datenschutz", "edit_user", "gamedivers", "helldivers", "impressum", "memecoin",
+    "datenschutz", "gamedivers", "helldivers", "impressum", "memecoin",
     "minecraft", "palworld", "satisfactory", "spaceengineers", "spaceengineerstwo", "under-developement"
 ]
 
 for page in static_pages:
     app.add_url_rule(f'/{page}', page, lambda page=page: render_template(f'{page}.html'))
+
 
 if __name__ == '__main__':
     create_database()

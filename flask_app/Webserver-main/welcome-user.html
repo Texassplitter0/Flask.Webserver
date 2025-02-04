@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Willkommen</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background: #29293d;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #FFD700;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        a {
+            display: block;
+            background: #FFD700;
+            color: #222;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        a:hover {
+            background: #e6b800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Willkommen, {{ user }}</h1>
+        <p>Du bist als {{ role }} eingeloggt.</p>
+
+        <a href="{{ url_for('logout') }}">Logout</a>  
+
+        {% if role == "admin" %}
+            <a href="admin.html">Admin-Panel</a>
+        {% endif %}
+
+        <a href="welcome.html">Zurück zur Startseite</a>
+    </div>
+</body>
+</html>

@@ -7,51 +7,52 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
             text-align: center;
             background-image: url("{{ url_for('static', filename='images/background-index.webp') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
         header {
-            background-color: #FFD700;
-            padding: 100px 20px;
-            text-align: center;
+            background: #FFD700;
+            padding: 60px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 100%;
+            width: 100%;
+            margin-top: 20px;
         }
         header h1 {
             margin: 0;
             color: #2C2C2C;
-            font-size: 3.5em;
+            font-size: 2.8em;
         }
         header p {
-            font-size: 1.8em;
+            font-size: 1.5em;
             margin-top: 10px;
         }
         main {
-            padding: 20px;
-        }
-        .box {
-            background-color: #242424;
-            color: #FFD700;
-            border-radius: 10px;
-            padding: 50px;
-            max-width: 500px;
-            margin: 20px auto;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-size: cover;
-            background-position: center;
-            position: relative;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
         .login-container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-width: 400px;
+            width: 90%;
             margin: auto;
         }
         .login-container h2 {
@@ -60,32 +61,36 @@
         }
         .login-container input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 1em;
         }
         .login-container button {
             margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #FFD700;
+            padding: 12px;
+            background: #FFD700;
             color: #242424;
             border: none;
-            border-radius: 5px;
-            font-size: 1em;
+            border-radius: 8px;
+            font-size: 1.1em;
             cursor: pointer;
-            width: 100%;
             font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
         }
         .login-container button:hover {
-            background-color: #e6c300;
+            background: #e6c300;
         }
         footer {
-            background-color: #000000;
+            background: #000000;
             color: white;
             text-align: center;
-            padding: 1em 0;
+            padding: 15px 0;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 15px 15px 0 0;
         }
     </style>
 </head>
@@ -95,18 +100,15 @@
         <p>Das Portal für alles rund um unsere Gameserver oder sonstige Community-Themen</p>
     </header>
     <main>
-        <div class="box">
-            <h1>Für alle Infos unserer Community, melden Sie sich bitte an.</h1>
-            <div class="login-container">
-                <h2>Login</h2>
-                <form action="{{ url_for('login') }}" method="POST">
-                    <label for="username">Benutzername:</label>
-                    <input type="text" id="username" name="username" required>
-                    <label for="password">Passwort:</label>
-                    <input type="password" id="password" name="password" required>
-                    <button type="submit">Anmelden</button>
-                </form>
-            </div>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="{{ url_for('login') }}" method="POST">
+                <label for="username">Benutzername:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Passwort:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Anmelden</button>
+            </form>
         </div>
     </main>
     <footer>

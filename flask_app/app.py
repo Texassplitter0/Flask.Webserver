@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__, static_folder="flask_app/Webserver-main/images", template_folder=os.path.abspath('flask_app/Webserver-main'))
+app = Flask(__name__, static_folder="/flask_app/Webserver-main/images", template_folder=os.path.abspath('/flask_app/Webserver-main'))
 app.secret_key = 'your_secret_key'
 
 
@@ -11,7 +11,7 @@ def get_db_connection():
     """Stellt eine Verbindung zur MySQL-Datenbank her"""
     return mysql.connector.connect(
         host=os.getenv('MYSQL_HOST', 'db'),  # Richtig für Docker
-        user=os.getenv('MYSQL_USER', 'flask_user'),
+        user=os.getenv('MYSQL_USER', 'flas_user'),
         password=os.getenv('MYSQL_PASSWORD', 'rootpassword'),
         database=os.getenv('MYSQL_DATABASE', 'flask_app')
     )
@@ -64,7 +64,7 @@ def login():
     if user and user['password'] and check_password_hash(user['password'], password):
         session['user'] = username
         session['role'] = user['role']
-        return redirect(url_for('welcome'))
+        return redirect(url_for('welcome-user'))
     else:
         return "Login fehlgeschlagen!", 401
 
@@ -72,7 +72,7 @@ def login():
 @app.route('/welcome')
 def welcome():
     if 'user' in session:
-        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
+        return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))
 
 

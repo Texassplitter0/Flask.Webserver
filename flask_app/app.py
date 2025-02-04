@@ -64,7 +64,7 @@ def login():
     if user and user['password'] and check_password_hash(user['password'], password):
         session['user'] = username
         session['role'] = user['role']
-        return redirect(url_for('welcome-user'))
+        return redirect(url_for('welcome'))
     else:
         return "Login fehlgeschlagen!", 401
 

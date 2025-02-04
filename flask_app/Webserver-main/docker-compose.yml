@@ -4,7 +4,7 @@ services:
       context: .
 #      dockerfile: dockerfile
 #    ports:
-#      - "3030:3030" # Passe die Ports an, falls notwendig
+#      - "10100:3030" # Passe die Ports an, falls notwendig
     environment:
       - EXAMPLE_ENV_VAR=value
     labels:

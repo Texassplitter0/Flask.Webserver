@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 INSERT INTO users (username, password, role) 
-VALUES ('Admin', '$2y$12$xG/YV/0aVKM72KzFmsn2RuMeUefGbIY4CRHkK2wJhx0PMOXoUmSqq', 'admin')
+VALUES ('Admin', '1$k3gK4qOs7RDbysv2$9234360b86c9da0495c3dc04ee95002ab6462ed2b0662c8f7d85e1ef85e09ef776b1663585886628443fa76201b36fa41aa8fdbb8fbddc5c54a2cc6a5a8e004b', 'admin')
 ON DUPLICATE KEY UPDATE username=username;
 

@@ -1,8 +1,13 @@
 FROM python:3.9
 
 WORKDIR /app
+
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . /app/flask_app
-COPY ./Webserver-main/images /app/flask_app/Webserver-main/images
-CMD ["python", "flask_app/app.py"]
+COPY ./flask_app/Webserver-main/images /app/flask_app/images
+
+ENV FLASK_APP=flask_app.app
+ENV FLASK_RUN_HOST=0.0.0.0
+CMD ["flask", "run", "--host=0.0.0.0"]

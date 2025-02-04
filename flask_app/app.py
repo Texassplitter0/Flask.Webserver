@@ -56,7 +56,18 @@ def index():
 
 @app.route('/adminpanel')
 def adminpanel():
-    return render_template('admin.html')
+    if 'user' in session and session.get('role') == 'admin':
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id, username, role FROM users')
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return render_template('admin.html', users=users)
+    
+    return redirect(url_for('index'))
+
 
 @app.route('/login', methods=['POST'])
 def login():

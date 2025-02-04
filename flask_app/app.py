@@ -54,6 +54,9 @@ def favicon():
 def index():
     return render_template('index.html')
 
+@app.route('/')
+def adminpanel():
+    return render_template('admin.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -70,12 +73,12 @@ def login():
     if user and user['password'] and check_password_hash(user['password'], password):
         session['user'] = username
         session['role'] = user['role']
-        return redirect(url_for('welcome-user'))
+        return redirect(url_for('welcome'))
     else:
         return "Login fehlgeschlagen!", 401
 
 
-@app.route('/welcome-user')
+@app.route('/welcome')
 def welcome():
     if 'user' in session:
         return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
@@ -166,15 +169,6 @@ def edit_user(user_id):
         return render_template('edit_user.html', user=user)
     
     return redirect(url_for('index'))
-
-# Generische Routen für statische HTML-Seiten (ohne edit_user)
-static_pages = [
-    "datenschutz", "gamedivers", "helldivers", "impressum", "memecoin",
-    "minecraft", "palworld", "satisfactory", "spaceengineers", "spaceengineerstwo", "under-developement"
-]
-
-for page in static_pages:
-    app.add_url_rule(f'/{page}', page, lambda page=page: render_template(f'{page}.html'))
 
 
 if __name__ == '__main__':

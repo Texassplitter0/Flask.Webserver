@@ -78,7 +78,7 @@ def login():
 @app.route('/welcome')
 def welcome():
     if 'user' in session:
-        return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
+        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))
 
 

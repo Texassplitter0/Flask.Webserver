@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(20) NOT NULL DEFAULT 'user'
 );
 
-INSERT INTO users (username, password_hash, role) 
-VALUES ('Admin', '$2y$10$yWm9qv5/hH68ZJ3SmgdpUuvS/iAE8JB9hHp54QOpVle2NDGc9WJ6m', 'admin')
+INSERT INTO users (username, password, role) 
+VALUES ('Admin', '$2y$12$xG/YV/0aVKM72KzFmsn2RuMeUefGbIY4CRHkK2wJhx0PMOXoUmSqq', 'admin')
 ON DUPLICATE KEY UPDATE username=username;
+

@@ -4,4 +4,5 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/flask_app
+COPY ./flask_app/Webserver-main /app/flask_app/Webserver-main
 CMD ["python", "flask_app/app.py"]

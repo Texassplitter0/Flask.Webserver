@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__, static_folder="/app/flask_app/Webserver-main/images", template_folder=os.path.abspath('/app/flask_app/Webserver-main'))
+app = Flask(__name__, static_folder=os.path.abspath('/app/flask_app/Webserver-main/images'), template_folder=os.path.abspath('/app/flask_app/Webserver-main'))
 app.secret_key = 'your_secret_key'
 
 

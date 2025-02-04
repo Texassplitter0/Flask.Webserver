@@ -36,22 +36,6 @@ docker-compose up --build
 
 ---
 
-## Standard Admin-Login
-- **Benutzername:** `Admin`
-- **Passwort:** `Lappen01` *(Passwort ist gehasht gespeichert, wird beim ersten Start automatisch generiert)*
-
-Falls das Passwort nicht funktioniert, kann ein neuer Hash in der MySQL-Datenbank generiert werden:
-```python
-from werkzeug.security import generate_password_hash
-print(generate_password_hash("Lappen01"))
-```
-Füge dann den neuen Hash manuell in MySQL ein:
-```sql
-UPDATE users SET password = 'NEUER_HASH' WHERE username = 'Admin';
-```
-
----
-
 ## Verzeichnisstruktur
 ```plaintext
 /flask_app

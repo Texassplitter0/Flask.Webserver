@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            background-image: url('images/background-index.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            color: #2C2C2C;
+            font-size: 3.5em;
+        }
+        header p {
+            font-size: 1.8em;
+            margin-top: 10px;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #242424;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 50px;
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            margin: auto;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #242424;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .login-container button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #242424;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .login-container button:hover {
+            background-color: #e6c300;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Willkommen auf Gamerdiver.de</h1>
+        <p>Das Portal für alles rund um unsere Gameserver oder sonstige Community-Themen</p>
+    </header>
+    <main>
+        <div class="box">
+            <h1>Für alle Infos unserer Community, melden Sie sich bitte an.</h1>
+            <div class="login-container">
+                <h2>Login</h2>
+                <form action="{{ url_for('login') }}" method="POST">
+                    <label for="username">Benutzername:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Passwort:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Anmelden</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Dönerhub.de/Gamedivers.de</p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby-, Privat- oder Satire-Zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten sind rein zufällig.</p>
+    </footer>
+</body>
+</html>

@@ -1,3 +1,4 @@
+
 services:
   web:
     build: .
@@ -29,6 +30,11 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 40s  # Erhöht Wartezeit auf MySQL-Start
 
 volumes:
   mysql_data:

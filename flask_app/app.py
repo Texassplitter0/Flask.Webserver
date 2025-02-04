@@ -54,7 +54,7 @@ def favicon():
 def index():
     return render_template('index.html')
 
-@app.route('/')
+@app.route('/adminpanel')
 def adminpanel():
     return render_template('admin.html')
 

@@ -43,6 +43,12 @@ def create_database():
     cursor.close()
     conn.close()
 
+from flask import send_from_directory
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('flask_app/Webserver-main/static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route('/')
 def index():

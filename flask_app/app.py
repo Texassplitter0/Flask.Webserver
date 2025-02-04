@@ -70,12 +70,12 @@ def login():
     if user and user['password'] and check_password_hash(user['password'], password):
         session['user'] = username
         session['role'] = user['role']
-        return redirect(url_for('welcome'))
+        return redirect(url_for('welcome-user'))
     else:
         return "Login fehlgeschlagen!", 401
 
 
-@app.route('/welcome')
+@app.route('/welcome-user')
 def welcome():
     if 'user' in session:
         return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
@@ -167,6 +167,13 @@ def edit_user(user_id):
     
     return redirect(url_for('index'))
 
+static_pages = [
+    "datenschutz", "edit_user", "gamedivers", "helldivers", "impressum", "memecoin",
+    "minecraft", "palworld", "satisfactory", "spaceengineers", "spaceengineerstwo", "under-developement"
+]
+
+for page in static_pages:
+    app.add_url_rule(f'/{page}', page, lambda page=page: render_template(f'{page}.html'))
 
 if __name__ == '__main__':
     create_database()

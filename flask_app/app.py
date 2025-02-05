@@ -83,6 +83,10 @@ def initialize_database():
     except Exception as e:
         print(f"❌ Fehler beim Laden der ini.sql: {e}")
 
+if __name__ == '__main__':
+    initialize_database()
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
 
 from flask import send_from_directory
 

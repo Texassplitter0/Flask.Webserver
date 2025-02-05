@@ -190,26 +190,32 @@ def welcome():
 
 
 # <------------------------------------------Restliche-Routes------------------------------------------------------------>
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
+    error = None  # Standardmäßig keine Fehlermeldung
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
-    user = cursor.fetchone()
-    cursor.close()
-    conn.close()
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-    if user and user['password'] and check_password_hash(user['password'], password):
-        session['logged_in'] = True 
-        session['user'] = username
-        session['user_id'] = user['id']
-        session['role'] = user['role']
-        return redirect(url_for('welcomeuser'))
-    else:
-        return "Login fehlgeschlagen!", 401
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user and user['password'] and check_password_hash(user['password'], password):
+            session['logged_in'] = True 
+            session['user'] = username
+            session['user_id'] = user['id']
+            session['role'] = user['role']
+            return redirect(url_for('welcomeuser'))
+        else:
+            error = "⚠ Benutzername oder Passwort ist falsch!"
+
+    return render_template('login.html', error=error)
+
 
 
 @app.route('/logout')

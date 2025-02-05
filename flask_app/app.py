@@ -214,8 +214,7 @@ def login():
         else:
             error = "⚠ Benutzername oder Passwort ist falsch!"
 
-    return render_template('login.html', error=error)
-
+    return render_template('index.html', error=error)
 
 
 @app.route('/logout')

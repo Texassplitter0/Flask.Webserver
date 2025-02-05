@@ -62,12 +62,17 @@ def adminpanel():
     if session.get('logged_in') and session.get('role') == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, username, role FROM users')
+
+        cursor.execute("SELECT id, username FROM registration_requests")
+        registration_requests = cursor.fetchall()
+
+        cursor.execute("SELECT id, username, role FROM users")
         users = cursor.fetchall()
+
         cursor.close()
         conn.close()
-        
-        return render_template('admin.html', user=session['user'], role=session.get('role', 'user'), users=users)
+
+        return render_template('admin.html', users=users, registration_requests=registration_requests)
 
     return redirect(url_for('index'))
 
@@ -215,6 +220,75 @@ def login():
             error = "⚠ Benutzername oder Passwort ist falsch!"
 
     return render_template('index.html', error=error)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error = None
+    success = None
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Prüfen, ob Benutzername bereits existiert
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            error = "⚠ Benutzername bereits vergeben!"
+        else:
+            # Registrierung als ausstehende Anfrage speichern
+            hashed_password = generate_password_hash(password)
+            cursor.execute("INSERT INTO registration_requests (username, password) VALUES (%s, %s)", (username, hashed_password))
+            conn.commit()
+            success = "✅ Registrierung erfolgreich! Ein Admin muss die Anfrage bestätigen."
+
+        cursor.close()
+        conn.close()
+
+    return render_template('registration.html', error=error, success=success)
+
+
+@app.route('/admin_approve/<int:request_id>')
+def admin_approve(request_id):
+    if 'role' in session and session['role'] == 'admin':
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Benutzer aus der Registrierungstabelle holen
+        cursor.execute("SELECT * FROM registration_requests WHERE id = %s", (request_id,))
+        request_data = cursor.fetchone()
+
+        if request_data:
+            # In die Haupt-User-Tabelle einfügen
+            cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, 'user')",
+                           (request_data['username'], request_data['password']))
+            # Registrierungsanfrage löschen
+            cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
+            conn.commit()
+
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('adminpanel'))
+
+
+@app.route('/admin_reject/<int:request_id>')
+def admin_reject(request_id):
+    if 'role' in session and session['role'] == 'admin':
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('adminpanel'))
 
 
 @app.route('/logout')

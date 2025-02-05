@@ -57,6 +57,112 @@ def index():
 
 
 # <------------------------------------------Routes-für-HTML-Dateien-setzen------------------------------------------------------------>
+@app.route('/adminpanel')
+def adminpanel():
+    if session.get('logged_in') and session.get('role') == 'admin':
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id, username, role FROM users')
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        
+        return render_template('admin.html', user=session['user'], role=session.get('role', 'user'), users=users)
+
+    return redirect(url_for('index'))
+
+
+@app.route('/datenschutz')
+def datenschutz():
+    if session.get('logged_in'):
+        return render_template('datenschutz.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/gamedivers')
+def gamedivers():
+    if session.get('logged_in'):
+        return render_template('gamedivers.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/helldivers')
+def helldivers():
+    if session.get('logged_in'):
+        return render_template('helldivers.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/impressum')
+def impressum():
+    if session.get('logged_in'):
+        return render_template('impressum.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/memecoin')
+def memecoin():
+    if session.get('logged_in'):
+        return render_template('memecoin.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/minecraft')
+def minecraft():
+    if session.get('logged_in'):
+        return render_template('minecraft.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/palworld')
+def palworld():
+    if session.get('logged_in'):
+        return render_template('palworld.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/profile')
+def profile():
+    if session.get('logged_in'):
+        return render_template('profile.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/registration')
+def registration():
+    if session.get('logged_in'):
+        return render_template('registration.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/satisfactory')
+def satisfactory():
+    if session.get('logged_in'):
+        return render_template('satisfactory.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/spaceengineers')
+def spaceengineers():
+    if session.get('logged_in'):
+        return render_template('spaceengineers.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/spaceengineerstwo')
+def spaceengineerstwo():
+    if session.get('logged_in'):
+        return render_template('spaceengineerstwo.thml', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/underdevelopement')
+def underdevelopement():
+    if session.get('logged_in'):
+        return render_template('under-developement.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
 @app.route('/welcomeuser')
 def welcomeuser():
     if session.get('logged_in'):
@@ -65,6 +171,13 @@ def welcomeuser():
 
 
 @app.route('/welcome')
+def welcome():
+    if session.get('logged_in'):
+        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/')
 def welcome():
     if session.get('logged_in'):
         return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
@@ -121,7 +234,7 @@ def admin():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        if request.method == 'POST':  # 🔥 Falls ein neuer Benutzer hinzugefügt wird
+        if request.method == 'POST':  
             new_username = request.form['username']
             new_password = request.form['password']
             role = request.form['role']
@@ -132,7 +245,6 @@ def admin():
                            (new_username, hashed_password, role))
             conn.commit()
 
-        # Benutzerliste aktualisieren
         cursor.execute('SELECT id, username, role FROM users')
         users = cursor.fetchall()
         cursor.close()

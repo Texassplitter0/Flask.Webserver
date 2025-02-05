@@ -56,6 +56,29 @@ def index():
     return render_template('index.html')
 
 
+# <------------------------------------------Routes-für-HTML-Dateien-setzen------------------------------------------------------------>
+@app.route('/welcomeuser')
+def welcomeuser():
+    if session.get('logged_in'):
+        return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/welcome')
+def welcome():
+    if session.get('logged_in'):
+        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+@app.route('/adminpanel')
+def adminpanel():
+    if session.get('logged_in'):
+        return render_template('admin.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
+# <------------------------------------------Restliche-Routes------------------------------------------------------------>
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -77,40 +100,10 @@ def login():
         return "Login fehlgeschlagen!", 401
 
 
-@app.route('/welcomeuser')
-def welcomeuser():
-    if session.get('logged_in'):
-        return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
-    return redirect(url_for('index'))
-
-
-@app.route('/welcome')
-def welcome():
-    if session.get('logged_in'):
-        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
-    return redirect(url_for('index'))
-
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
-
-
-@app.route('/adminpanel')
-def adminpanel():
-    if not session.get('logged_in'):
-        abort(403)  # Zugriff verweigert
-
-    return render_template('admin.html')
-
-
-@app.route('/minecraft')
-def minecraft():
-    if not session.get('logged_in'):
-        abort(403)  # Zugriff verweigert
-
-    return render_template('minecraft.html')
 
 
 @app.route('/admin', methods=['GET', 'POST'])

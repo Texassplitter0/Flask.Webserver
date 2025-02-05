@@ -124,7 +124,19 @@ def palworld():
 @app.route('/profile')
 def profile():
     if session.get('logged_in'):
-        return render_template('profile.html', user=session['user'], role=session.get('role', 'user'))
+        username = session['user']
+
+        # Benutzerdaten aus der Datenbank abrufen
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id, username, role FROM users WHERE username = %s', (username,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user:
+            return render_template('profile.html', user=user)
+    
     return redirect(url_for('index'))
 
 
@@ -216,6 +228,7 @@ def login():
     if user and user['password'] and check_password_hash(user['password'], password):
         session['logged_in'] = True 
         session['user'] = username
+        session['user_id'] = user['id']
         session['role'] = user['role']
         return redirect(url_for('welcomeuser'))
     else:
@@ -252,6 +265,26 @@ def admin():
 
         return render_template('admin.html', users=users)
 
+    return redirect(url_for('index'))
+
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    if session.get('logged_in'):
+        user_id = session.get('user_id')
+
+        # Benutzer aus der Datenbank löschen
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        # Benutzer ausloggen
+        session.clear()
+        return redirect(url_for('index'))
+    
     return redirect(url_for('index'))
 
 

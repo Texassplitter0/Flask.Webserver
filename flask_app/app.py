@@ -12,7 +12,7 @@ def get_db_connection():
     return mysql.connector.connect(
         host=os.getenv('MYSQL_HOST', 'db'),  # Richtig für Docker
         user=os.getenv('MYSQL_USER', 'flas_user'),
-        password=os.getenv('MYSQL_PASSWORD', 'rootpassword'),
+        password=os.getenv('MYSQL_PASSWORD', 'flask_password'),
         database=os.getenv('MYSQL_DATABASE', 'flask_app')
     )
 
@@ -68,7 +68,7 @@ def initialize_database():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        with open("ini.sql", "r") as f:
+        with open("init.sql", "r") as f:
             sql_commands = f.read()
 
         for command in sql_commands.split(";"):
@@ -213,7 +213,7 @@ def spaceengineers():
 @app.route('/spaceengineerstwo')
 def spaceengineerstwo():
     if session.get('logged_in'):
-        return render_template('spaceengineerstwo.thml', user=session['user'], role=session.get('role', 'user'))
+        return render_template('spaceengineerstwo.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))
 
 

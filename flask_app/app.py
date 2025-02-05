@@ -189,13 +189,6 @@ def welcome():
     return redirect(url_for('index'))
 
 
-@app.route('/')
-def welcome():
-    if session.get('logged_in'):
-        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
-    return redirect(url_for('index'))
-
-
 @app.route('/adminpanel')
 def adminpanel():
     if session.get('logged_in') and session.get('role') == 'admin':

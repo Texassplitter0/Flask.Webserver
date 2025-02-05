@@ -143,7 +143,7 @@
     
         <div class="box">
             <h2>Neuen Benutzer hinzufügen</h2>
-            <form method="POST" action="admin.html">
+            <form method="POST" action="{{ url_for('admin') }}">
                 <label>Benutzername:</label>
                 <input type="text" name="username" required>
                 <label>Passwort:</label>

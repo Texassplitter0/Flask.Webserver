@@ -72,13 +72,13 @@ def login():
         session['logged_in'] = True 
         session['user'] = username
         session['role'] = user['role']
-        return redirect(url_for('welcome'))
+        return redirect(url_for('welcomeuser'))
     else:
         return "Login fehlgeschlagen!", 401
 
 
-@app.route('/welcome')
-def welcome():
+@app.route('/welcomeuser')
+def welcomeuser():
     if session.get('logged_in'):
         return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))

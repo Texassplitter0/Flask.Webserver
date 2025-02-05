@@ -143,11 +143,11 @@
 <body>
     <!-- Navigation Bar -->
     <nav>
-        <a href="welcome.html">Home</a>
-        <a href="minecraft.html">Minecraft Server</a>
-        <a href="gamedivers.html">GameDivers</a>
-        <a href="memecoin.html">Memecoin</a>
-        <a href="under-developement.html">Login</a>
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
+        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('memecoin') }}">Memecoin</a>
+        <a href="{{ url_for('underdevelopement') }}">Login</a>
     </nav>
 
     <!-- Header -->
@@ -162,7 +162,7 @@
         <!--Helldivers-->
         <div class="box" style="background-image: url('images/background-helldivers-info.webp');">
             <nav>
-                <a href="helldivers.html"><h2>Helldivers 2</h2></a>
+                <a href="{{ url_for('helldivers') }}"><h2>Helldivers 2</h2></a>
             </nav>
             <p>Für alle die Über-Erde verteidigen wollen.</p>
             <iframe src="https://steamdb.info/embed/?appid=553850" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
@@ -171,7 +171,7 @@
         <!--Space Engineers-->
         <div class="box" style="background-image: url('images/background-spaceengineers.webp');">
             <nav>
-                <a href="spaceengineers.html"><h2>Space Engineers</h2></a>
+                <a href="{{ url_for('spaceengineers') }}"><h2>Space Engineers</h2></a>
             </nav>
             <p>Für Liebhaber.</p>
             <iframe src="https://steamdb.info/embed/?appid=244850" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
@@ -180,7 +180,7 @@
         <!--Space Engineers 2-->
         <div class="box" style="background-image: url('images/background-spaceengineers2.webp');">
             <nav>
-                <a href="spaceengineerstwo.html"><h2>Space Engineers 2</h2></a>
+                <a href="{{ url_for('spaceengineerstwo') }}"><h2>Space Engineers 2</h2></a>
             </nav>
             <p>Alpha Release.</p>
             <iframe src="https://steamdb.info/embed/?appid=1133870" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
@@ -189,7 +189,7 @@
         <!--Pallworld-->
         <div class="box" style="background-image: url('images/background-pallworld.webp');">
             <nav>
-                <a href="palworld.html"><h2>Palworld</h2></a>
+                <a href="{{ url_for('palworld') }}"><h2>Palworld</h2></a>
             </nav>
             <p>Perfekt für alle die auf Waffen stehen.</p>
             <iframe src="https://steamdb.info/embed/?appid=1623730" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
@@ -198,7 +198,7 @@
         <!--Satisfactory-->
         <div class="box" style="background-image: url('images/background-satisfactory.webp');">
             <nav>
-                <a href="satisfactory.html"><h2>Satisfactory</h2></a>
+                <a href="{{ url_for('satisfactory') }}"><h2>Satisfactory</h2></a>
             </nav>
             <p>Perfekt für alle die auf Waffen stehen.</p>
             <iframe src="https://steamdb.info/embed/?appid=526870" height="389" style="border:0;overflow:hidden;width:100%" loading="lazy"></iframe>
@@ -216,7 +216,7 @@
 
     <!-- Fußzeile für Impressum-->
     <footer>
-        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a></p>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
         <p>DönerHub.de is a hobby project and is not affiliated with Valve, Steam or SteamDB. All times on the site are UTC</p>
         <p>Steam and the Steam logo are trademarks of Valve Corporation. All other trademarks are property of their respective owners.</p>

@@ -7,9 +7,9 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e2f;
+            color: #fff;
             text-align: center;
             background-image: url('images/background-index.webp');
             background-size: cover; 
@@ -19,7 +19,7 @@
         nav {
             display: flex;
             justify-content: center;
-            background-color: #000000;
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 10px 0;
             position: sticky;
             top: 0;
@@ -33,53 +33,89 @@
             display: inline-block;
         }
         nav a:hover {
-            background-color: #444;
+            background-color: rgba(255, 215, 0, 0.2);
             border-radius: 5px;
-        }
-        header {
-            background-color: #FFD700;
-            padding: 100px 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            color: #2C2C2C;
-            font-size: 3.5em;
-        }
-        header p {
-            font-size: 1.8em;
-            margin-top: 10px;
         }
         .container {
-            background-color: #333;
+            background: rgba(40, 40, 60, 0.95);
             color: #FFD700;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 40px;
-            max-width: 400px;
-            margin: 20px auto;
+            max-width: 450px;
+            margin: 40px auto;
             text-align: left;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        .container h1 {
+        .profile-header {
             text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .profile-info:last-child {
+            border-bottom: none;
+        }
+        .profile-info i {
+            font-size: 1.5em;
+            margin-right: 10px;
             color: #FFD700;
         }
-        .container button {
-            background-color: #FFD700;
-            color: #333;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
+        .profile-info span {
             font-weight: bold;
+            color: #fff;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .action-buttons button {
+            background-color: #FFD700;
+            color: #222;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
             width: 100%;
+            font-size: 1em;
             margin-top: 10px;
         }
-        .container button:hover {
-            background-color: #e6c300;
+        .action-buttons button:hover {
+            background-color: #e6b800;
+        }
+        .warning-box {
+            display: none;
+            background-color: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .warning-box button {
+            background-color: white;
+            color: #ff4444;
+            font-weight: bold;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .cancel-button {
+            background-color: gray !important;
+            color: white;
         }
         footer {
-            background-color: #000000;
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
             text-align: center;
             padding: 1em 0;
@@ -88,6 +124,7 @@
             width: 100%;
         }
     </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FontAwesome für Icons -->
 </head>
 <body>
 
@@ -101,22 +138,45 @@
     </nav>
 
     <div class="container">
-        <h1>Dein Profil</h1>
-        <p><strong>Benutzername:</strong> {{ user.username }}</p>
-        <p><strong>Rolle:</strong> {{ user.role }}</p>
+        <div class="profile-header">Dein Profil</div>
 
-        <h3>Account löschen</h3>
-        <p style="color: red;">⚠ Achtung: Diese Aktion kann nicht rückgängig gemacht werden!</p>
+        <!-- Benutzerinformationen mit Icons -->
+        <div class="profile-info">
+            <i class="fas fa-user"></i>
+            <span>Benutzername: </span> {{ user.username }}
+        </div>
+        <div class="profile-info">
+            <i class="fas fa-shield-alt"></i>
+            <span>Rolle: </span> {{ user.role }}
+        </div>
 
-        <!-- Account löschen Button -->
-        <form action="{{ url_for('delete_account') }}" method="POST" onsubmit="return confirm('Bist du sicher, dass du deinen Account löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden!');">
-            <button type="submit" style="background-color: red; color: white;">Account löschen</button>
-        </form>
+        <div class="action-buttons">
+            <!-- Account löschen Button -->
+            <button onclick="showWarning()" style="background-color: red; color: white;">Account löschen</button>
 
-        <button onclick="logout()">Abmelden</button>
+            <!-- Warnung + Bestätigung (versteckt) -->
+            <div id="deleteWarning" class="warning-box">
+                <p>⚠ Achtung: Diese Aktion kann nicht rückgängig gemacht werden!</p>
+                <form action="{{ url_for('delete_account') }}" method="POST">
+                    <button type="submit">Löschen bestätigen</button>
+                </form>
+                <button class="cancel-button" onclick="hideWarning()">Abbrechen</button>
+            </div>
+
+            <!-- Logout Button -->
+            <button onclick="logout()">Abmelden</button>
+        </div>
     </div>
 
     <script>
+        function showWarning() {
+            document.getElementById("deleteWarning").style.display = "block";
+        }
+
+        function hideWarning() {
+            document.getElementById("deleteWarning").style.display = "none";
+        }
+
         function logout() {
             fetch("{{ url_for('logout') }}")
                 .then(() => window.location.href = "{{ url_for('index') }}");

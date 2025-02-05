@@ -18,10 +18,11 @@ def get_db_connection():
 
 
 def create_database():
-    """Erstellt die Datenbank-Tabelle 'users', falls sie nicht existiert, und fügt den Admin-User hinzu"""
+    """Erstellt die Datenbank-Tabelle 'users' und 'registration_requests', falls sie nicht existieren"""
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Benutzer-Tabelle erstellen
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +32,16 @@ def create_database():
         )
     """)
 
-    # Admin-User existiert
+    # Registrierungstabelle erstellen
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS registration_requests (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL
+        )
+    """)
+
+    # Admin-User sicherstellen
     admin_password_hash = generate_password_hash("Lappen01")
     cursor.execute("""
         INSERT INTO users (username, password, role) 

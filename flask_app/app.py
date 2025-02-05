@@ -91,7 +91,7 @@ def logout():
 
 
 @app.route('/adminpanel')
-def minecraft():
+def adminpanel():
     if not session.get('logged_in'):
         abort(403)  # Zugriff verweigert
 

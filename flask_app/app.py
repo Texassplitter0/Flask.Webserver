@@ -84,6 +84,13 @@ def welcomeuser():
     return redirect(url_for('index'))
 
 
+@app.route('/welcome')
+def welcome():
+    if session.get('logged_in'):
+        return render_template('welcome.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
 @app.route('/logout')
 def logout():
     session.clear()

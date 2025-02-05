@@ -102,11 +102,11 @@
 <body>
     <!-- Navigation Bar -->
     <nav>
-        <a href="welcome.html">Home</a>
-        <a href="minecraft.html">Minecraft Server</a>
-        <a href="gamedivers.html">GameDivers</a>
-        <a href="memecoin.html">Memecoin</a>
-        <a href="under-developement.html">Login</a>
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
+        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('memecoin') }}">Memecoin</a>
+        <a href="{{ url_for('underdevelopement') }}">Login</a>
     </nav>
 
     <!-- Header -->
@@ -132,7 +132,7 @@
 
     <!-- Fußzeile für Impressum-->
     <footer>
-        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a>
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
         <p>HELLDIVERS™ 2 PRIVACY POLICYUSER AGREEMENTSoftware subject to license:HEALTH WARNINGWARNING: IF YOU HAVE A HISTORY OF EPILEPSY OR SEIZURES, CONSULT A DOCTOR BEFORE USE. CERTAIN PATTERNS MAY TRIGGER SEIZURES WITH NO PRIOR HISTORY. BEFORE USING AND FOR MORE DETAILS, SEE IMPORTANT HEALTH AND SAFETY WARNINGS ©2023 Sony Interactive Entertainment LLC. Developed by Arrowhead Game Studios AB. Helldivers is a registered trademark of Sony Interactive Entertainment LLC and related companies in the U.S. and other countries.</p>
     </footer>

@@ -3,170 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benutzer Registrieren</title>
+    <title>Registrierung</title>
     <style>
-        body {  
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+        body {
             text-align: center;
-            background-image: url('images/background-login.webp');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        nav {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
             display: flex;
             justify-content: center;
-            background-color: #000000;
-            padding: 10px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        nav a {
-            color: #FFD700;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            display: inline-block;
-        }
-        nav a:hover {
-            background-color: #444;
-            border-radius: 5px;
-        }
-        header {
-            background-color: #FFD700;
-            padding: 20px;
+            align-items: center;
+            height: 100vh;
             margin: 0;
         }
-        main {
-            padding: 20px;
-        }
-        .box {
-            background-color: #333;
-            color: #FFD700;
-            border-radius: 10px;
-            padding: 40px;
+        .container {
+            background: rgba(36, 36, 36, 0.95);
+            padding: 30px;
+            border-radius: 15px;
             max-width: 400px;
-            margin: 20px auto;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
-        .box h1 {
-            text-align: center;
+        h2 {
             color: #FFD700;
         }
-        .box form {
-            display: flex;
-            flex-direction: column;
+        input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-top: 10px;
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            font-size: 1em;
+            background: #ffffff;
+            color: #242424;
         }
-        .box input {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
-        .box button {
-            background-color: #FFD700;
-            color: #333;
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background: #FFD700;
+            color: #242424;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 1.2em;
             cursor: pointer;
+            width: 100%;
             font-weight: bold;
         }
-        .box button:hover {
-            background-color: #e6c300;
+        button:hover {
+            background: #e6c300;
         }
-        .checkbox-container {
-            text-align: left;
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
         }
-        footer {
-            background-color: #000000;
-            color: white;
-            text-align: center;
-            padding: 1em 0;
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <a href="{{ url_for('welcome') }}">Home</a>
-        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
-        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
-        <a href="{{ url_for('memecoin') }}">Memecoin</a>
-        <a href="{{ url_for('profile') }}">Profil</a>
-    </nav>
+    <div class="container">
+        <h2>Benutzer registrieren</h2>
+        
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
 
-    <!-- Header -->
-    <header>
-        <h1>Willkommen beim Login</h1>
-    </header>
+        {% if success %}
+        <p class="success-message">{{ success }}</p>
+        {% endif %}
 
-    <div class="box">
-        <h1>Benutzer Registrieren</h1>
-        <form id="registerForm">
-            <input type="email" id="registerEmail" name="email" placeholder="E-Mail-Adresse" required>
-            <input type="text" id="registerUsername" name="username" placeholder="Benutzername" required>
-            <input type="password" id="registerPassword" name="password" placeholder="Passwort" required>
-            <div class="checkbox-container">
-                <label for="show-password-register">Passwort anzeigen</label>
-                <input type="checkbox" id="show-password-register">
-            </div>
+        <form action="{{ url_for('register') }}" method="POST">
+            <input type="text" name="username" placeholder="Benutzername" required>
+            <input type="password" name="password" placeholder="Passwort" required>
             <button type="submit">Registrieren</button>
         </form>
-        <p id="register-error-message" style="color: red; display: none;"></p>
+
+        <p><a href="{{ url_for('index') }}">Zurück zur Startseite</a></p>
     </div>
-
-    <script>
-        const registerForm = document.getElementById('registerForm');
-        const registerErrorMessage = document.getElementById('register-error-message');
-        const registerPasswordInput = document.getElementById('registerPassword');
-        const showPasswordRegisterCheckbox = document.getElementById('show-password-register');
-
-        // Passwort anzeigen Funktion
-        showPasswordRegisterCheckbox.addEventListener('change', () => {
-            if (showPasswordRegisterCheckbox.checked) {
-                registerPasswordInput.type = 'text';
-            } else {
-                registerPasswordInput.type = 'password';
-            }
-        });
-
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-
-            const response = await fetch('http://localhost:10100/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                window.location.href = 'login.html'; // Weiterleitung zur Login-Seite
-            } else {
-                registerErrorMessage.textContent = data.message;
-                registerErrorMessage.style.display = 'block';
-            }
-        });
-    </script>
-
-    <!-- Fußzeile für Impressum-->
-    <footer>
-        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a>
-        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
-    </footer>
-
 </body>
 </html>

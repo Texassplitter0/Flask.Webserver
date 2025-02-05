@@ -19,39 +19,48 @@ def get_db_connection():
 
 def create_database():
     """Erstellt die Datenbank-Tabelle 'users' und 'registration_requests', falls sie nicht existieren"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # Benutzer-Tabelle erstellen
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            role ENUM('user', 'admin', 'editor') DEFAULT 'user'
-        )
-    """)
+        # Prüfen, ob Datenbank existiert (nur für Docker/MySQL-Server)
+        cursor.execute("CREATE DATABASE IF NOT EXISTS flask_app;")
+        cursor.execute("USE flask_app;")
 
-    # Registrierungstabelle erstellen
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS registration_requests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL
-        )
-    """)
+        # Benutzer-Tabelle erstellen
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                role ENUM('user', 'admin', 'editor') DEFAULT 'user'
+            )
+        """)
 
-    # Admin-User sicherstellen
-    admin_password_hash = generate_password_hash("Lappen01")
-    cursor.execute("""
-        INSERT INTO users (username, password, role) 
-        VALUES ('Admin', %s, 'admin')
-        ON DUPLICATE KEY UPDATE username=username;
-    """, (admin_password_hash,))
+        # Registrierungstabelle erstellen
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS registration_requests (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL
+            )
+        """)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        # Admin-User sicherstellen
+        admin_password_hash = generate_password_hash("Lappen01")
+        cursor.execute("""
+            INSERT INTO users (username, password, role) 
+            VALUES ('Admin', %s, 'admin')
+            ON DUPLICATE KEY UPDATE username=username;
+        """, (admin_password_hash,))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("✅ Datenbank erfolgreich überprüft und erstellt!")
+    except Exception as e:
+        print(f"❌ Fehler bei der Datenbankerstellung: {e}")
+
 
 
 from flask import send_from_directory

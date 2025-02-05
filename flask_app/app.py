@@ -120,30 +120,26 @@ def admin():
     if session.get('logged_in') and session.get('role') == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, username, role FROM users')
-        users = cursor.fetchall()
-        cursor.close()
-        conn.close()
 
-        if request.method == 'POST':
+        if request.method == 'POST':  # 🔥 Falls ein neuer Benutzer hinzugefügt wird
             new_username = request.form['username']
             new_password = request.form['password']
             role = request.form['role']
 
             hashed_password = generate_password_hash(new_password)
 
-            conn = get_db_connection()
-            cursor = conn.cursor()
             cursor.execute('INSERT INTO users (username, password, role) VALUES (%s, %s, %s)', 
                            (new_username, hashed_password, role))
             conn.commit()
-            cursor.close()
-            conn.close()
 
-            return redirect(url_for('admin'))
+        # Benutzerliste aktualisieren
+        cursor.execute('SELECT id, username, role FROM users')
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
 
         return render_template('admin.html', users=users)
-    
+
     return redirect(url_for('index'))
 
 

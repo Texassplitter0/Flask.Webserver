@@ -119,6 +119,7 @@
     </header>
 
     <main>
+        <!-- Benutzerliste -->
         <div class="box">
             <h2>Benutzerliste</h2>
             <table>
@@ -140,7 +141,8 @@
                 {% endfor %}
             </table>
         </div>
-    
+
+        <!-- Neue Benutzer hinzufügen -->
         <div class="box">
             <h2>Neuen Benutzer hinzufügen</h2>
             <form method="POST" action="{{ url_for('admin') }}">
@@ -158,6 +160,30 @@
             </form>
             <br>
             <a href="{{ url_for('welcome') }}">Startseite</a>
+        </div>
+
+        <!-- Registrierungsanfragen -->
+        <div class="box">
+            <h2>Registrierungsanfragen</h2>
+            {% if registration_requests %}
+            <table>
+                <tr>
+                    <th>Benutzername</th>
+                    <th>Aktionen</th>
+                </tr>
+                {% for request in registration_requests %}
+                <tr>
+                    <td>{{ request.username }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_approve', request_id=request.id) }}" style="color: green;">✔ Akzeptieren</a> |
+                        <a href="{{ url_for('admin_reject', request_id=request.id) }}" style="color: red;">✖ Ablehnen</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>Keine offenen Registrierungsanfragen.</p>
+            {% endif %}
         </div>
     </main>
 

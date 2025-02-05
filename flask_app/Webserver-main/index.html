@@ -24,38 +24,32 @@
         }
         header {
             background: #FFD700;
-            padding: 60px 20px;
+            padding: 40px 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 100%;
+            max-width: 90%;
             width: 100%;
-            margin-top: 20px;
+            text-align: center;
         }
         header h1 {
             margin: 0;
             color: #2C2C2C;
-            font-size: 2.8em;
+            font-size: 2.5em;
         }
         header p {
             color: #2C2C2C;
-            font-size: 1.5em;
+            font-size: 1.3em;
             margin-top: 10px;
-        }
-        main {
-            padding: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
         }
         .login-container {
             background: rgba(36, 36, 36, 0.95);
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
             max-width: 450px;
             width: 90%;
             text-align: center;
+            margin-top: 20px;
         }
         .login-container h2 {
             margin-bottom: 20px;
@@ -66,13 +60,16 @@
             display: block;
             text-align: left;
             font-weight: bold;
-            margin-top: 15px;
+            margin-top: 10px;
             color: #ffffff;
         }
-        .login-container input {
-            width: calc(100% - 24px);
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+        .input-container input {
+            width: calc(100% - 20px);
             padding: 12px;
-            margin-top: 5px;
             border: 2px solid #FFD700;
             border-radius: 10px;
             font-size: 1em;
@@ -80,10 +77,19 @@
             color: #242424;
             text-align: left;
             display: block;
+            margin-top: 5px;
+        }
+        .input-container i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #FFD700;
         }
         .login-container button {
             margin-top: 20px;
-            padding: 14px;
+            padding: 12px;
             background: #FFD700;
             color: #242424;
             border: none;
@@ -97,6 +103,12 @@
         .login-container button:hover {
             background: #e6c300;
         }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
         footer {
             background: #000000;
             color: white;
@@ -107,20 +119,32 @@
             border-radius: 15px 15px 0 0;
         }
     </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FontAwesome für Icons -->
 </head>
 <body>
     <header>
-        <h1>Willkommen auf Gamerdiver.de</h1>
+        <h1>Willkommen auf Gamediver.de</h1>
         <p>Das Portal für alles rund um unsere Gameserver oder sonstige Community-Themen</p>
     </header>
     <main>
         <div class="login-container">
             <h2>Login</h2>
+        
+            <!-- Fehlermeldung anzeigen, falls Login fehlschlägt -->
+            {% if error %}
+            <p class="error-message">{{ error }}</p>
+            {% endif %}
+        
             <form action="{{ url_for('login') }}" method="POST">
                 <label for="username">Benutzername:</label>
                 <input type="text" id="username" name="username" required>
+        
                 <label for="password">Passwort:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="input-container">
+                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-eye" id="togglePassword"></i>
+                </div>
+        
                 <button type="submit">Anmelden</button>
             </form>
         </div>
@@ -129,5 +153,22 @@
         <p>&copy; 2025 Dönerhub.de/Gamedivers.de</p>
         <p>Disclaimer: Diese Seite ist rein für Hobby-, Privat- oder Satire-Zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten sind rein zufällig.</p>
     </footer>
+
+    <script>
+        // Passwort sichtbar machen
+        document.getElementById("togglePassword").addEventListener("click", function() {
+            let passwordInput = document.getElementById("password");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    </script>
+
 </body>
 </html>

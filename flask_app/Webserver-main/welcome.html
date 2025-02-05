@@ -124,17 +124,17 @@
 <body>
     <!-- Navigation -->
     <nav>
-        <a href="welcome.html">Home</a>
-        <a href="minecraft.html">Minecraft Server</a>
-        <a href="gamedivers.html">GameDivers</a>
-        <a href="memecoin.html">Memecoin</a>
-        <a href="under-developement.html">Login</a>
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
+        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('memecoin') }}">Memecoin</a>
+        <a href="{{ url_for('underdevelopement') }}">Login</a>
     </nav>
 
     <!-- Header -->
     <header>
-        <h1>Willkommen bei DönerHub.de</h1>
-        <p>Das Portal für Minecraft und Memecoins!</p>
+        <h1>Willkommen bei Gamedivers.de</h1>
+        <p>Das Portal für Minecraft, Helldivers und Mehr!</p>
     </header>
 
     <!-- Info Boxes for Player Count and Coin Rate (Above the Minecraft and Memecoin Boxes) -->
@@ -152,30 +152,54 @@
     <!-- Info Boxes for Minecraft Server and Memecoin (Below the Player Count and Memecoin Rate) -->
     <div class="box">
         <div class="box">
-            <h2 onclick="window.location.href='minecraft.html';">Minecraft Server</h2>
+            <h2 id="minecraft-link">Minecraft Server</h2>
             <p>Server-IP des Vanilla Servers:</p>
             <h3><strong>DönerHub.de</strong></h3>
             <p>Perfekt für Kämpfer, Baumeister und Multiplayer-Enthusiasten.</p>
             <h4>YOU FOUND A EASTER EGG</h4>
             <p>Server-IP des Forge Servers:</p>
-            <h3 onclick="window.location.href='under-developement.html';"><b>Under Development</b></h3>
+            <h3 id="underdevelopment-link">Under Developement</h3>
             <p>Ein Mod Server für alle denen Vanilla nicht mehr reicht</p>
         </div>
         <div class="box">
-            <h2 onclick="window.location.href='memecoin.html';">DönerCoin</h2>
+            <h2 id="memecoin-link">DönerCoin</h2>
             <p>Ein einzigartiger Memecoin für Krypto-Fans.</p>
         </div>
         <div class="box">
-            <h2 onclick="window.location.href='gamedivers.html';">GameDivers</h2>
+            <h2 id="gamedivers-link">GameDivers</h2>
             <p>Für alle die auch mal was anderes wollen.</p>
         </div>
     </div>
 
     <!-- Fußzeile für Impressum-->
     <footer>
-        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="datenschutz.html" style="color: #ccc;">Datenschutz</a> | <a href="impressum.html" style="color: #ccc;">Impressum</a>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a>
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
     </footer>
+
+    <script>
+        document.getElementById("minecraft-link").addEventListener("click", function() {
+            window.location.href = "{{ url_for('minecraft') }}";
+        });
+    </script>
+
+    <script>
+        document.getElementById("underdevelopement-link").addEventListener("click", function() {
+            window.location.href = "{{ url_for('underdevelopement') }}";
+        });
+    </script>
+
+    <script>
+        document.getElementById("memecoin-link").addEventListener("click", function() {
+            window.location.href = "{{ url_for('memecoin') }}";
+        });
+    </script>
+
+    <script>
+        document.getElementById("gamedivers-link").addEventListener("click", function() {
+            window.location.href = "{{ url_for('gamedivers') }}";
+        });
+    </script>
 
 </body>
 </html>

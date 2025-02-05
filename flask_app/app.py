@@ -62,6 +62,27 @@ def create_database():
         print(f"❌ Fehler bei der Datenbankerstellung: {e}")
 
 
+def initialize_database():
+    """Führt die ini.sql aus, um die Datenbank zu initialisieren"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        with open("ini.sql", "r") as f:
+            sql_commands = f.read()
+
+        for command in sql_commands.split(";"):
+            if command.strip():
+                cursor.execute(command)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("✅ Datenbank erfolgreich aus ini.sql initialisiert!")
+
+    except Exception as e:
+        print(f"❌ Fehler beim Laden der ini.sql: {e}")
+
 
 from flask import send_from_directory
 

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -31,7 +31,7 @@ def create_database():
         )
     """)
 
-    # Sicherstellen, dass der Admin-User existiert
+    # Admin-User existiert
     admin_password_hash = generate_password_hash("Lappen01")
     cursor.execute("""
         INSERT INTO users (username, password, role) 
@@ -43,6 +43,7 @@ def create_database():
     cursor.close()
     conn.close()
 
+
 from flask import send_from_directory
 
 @app.route('/favicon.ico')
@@ -53,20 +54,6 @@ def favicon():
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/adminpanel')
-def adminpanel():
-    if 'user' in session and session.get('role') == 'admin':
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, username, role FROM users')
-        users = cursor.fetchall()
-        cursor.close()
-        conn.close()
-
-        return render_template('admin.html', users=users)
-    
-    return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['POST'])
@@ -82,6 +69,7 @@ def login():
     conn.close()
 
     if user and user['password'] and check_password_hash(user['password'], password):
+        session['logged_in'] = True 
         session['user'] = username
         session['role'] = user['role']
         return redirect(url_for('welcome'))
@@ -91,21 +79,36 @@ def login():
 
 @app.route('/welcome')
 def welcome():
-    if 'user' in session:
+    if session.get('logged_in'):
         return render_template('welcome-user.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))
 
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
-    session.pop('role', None)
+    session.clear()
     return redirect(url_for('index'))
+
+
+@app.route('/adminpanel')
+def minecraft():
+    if not session.get('logged_in'):
+        abort(403)  # Zugriff verweigert
+
+    return render_template('admin.html')
+
+
+@app.route('/minecraft')
+def minecraft():
+    if not session.get('logged_in'):
+        abort(403)  # Zugriff verweigert
+
+    return render_template('minecraft.html')
 
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    if 'user' in session and session.get('role') == 'admin':
+    if session.get('logged_in') and session.get('role') == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute('SELECT id, username, role FROM users')
@@ -118,7 +121,6 @@ def admin():
             new_password = request.form['password']
             role = request.form['role']
 
-            # 🔥 Stelle sicher, dass das Passwort gehasht wird
             hashed_password = generate_password_hash(new_password)
 
             conn = get_db_connection()
@@ -138,7 +140,7 @@ def admin():
 
 @app.route('/delete_user/<int:user_id>')
 def delete_user(user_id):
-    if 'user' in session and session.get('role') == 'admin':
+    if session.get('logged_in') and session.get('role') == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
@@ -150,7 +152,7 @@ def delete_user(user_id):
 
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
-    if 'user' in session and session.get('role') == 'admin':
+    if session.get('logged_in') and session.get('role') == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
@@ -161,7 +163,6 @@ def edit_user(user_id):
             new_password = request.form['password']
             role = request.form['role']
 
-            # Falls der Admin kein Passwort ändert, bleibt das alte bestehen
             if new_password:
                 hashed_password = generate_password_hash(new_password)
                 cursor.execute('UPDATE users SET username = %s, password = %s, role = %s WHERE id = %s', 

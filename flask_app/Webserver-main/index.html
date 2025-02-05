@@ -12,24 +12,18 @@
             background-color: #1e1e2f;
             color: #ffffff;
             text-align: center;
-            background-image: url("{{ url_for('static', filename='images/background-index.webp') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
         header {
-            background: #FFD700;
+            background-color: #FFD700;
             padding: 40px 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 90%;
-            width: 100%;
             text-align: center;
+            width: 100%;
         }
         header h1 {
             margin: 0;
@@ -37,24 +31,30 @@
             font-size: 2.5em;
         }
         header p {
-            color: #2C2C2C;
-            font-size: 1.3em;
+            font-size: 1.2em;
             margin-top: 10px;
+            color: #2C2C2C;
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
         .login-container {
-            background: rgba(36, 36, 36, 0.95);
+            background: #242424;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            max-width: 450px;
+            max-width: 350px;
             width: 90%;
             text-align: center;
-            margin-top: 20px;
         }
         .login-container h2 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #FFD700;
-            font-size: 1.8em;
+            font-size: 1.5em;
         }
         .login-container label {
             display: block;
@@ -66,35 +66,35 @@
         .input-container {
             position: relative;
             width: 100%;
+            display: flex;
+            align-items: center;
         }
         .input-container input {
-            width: calc(100% - 20px);
-            padding: 12px;
+            width: 100%;
+            padding: 10px;
             border: 2px solid #FFD700;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1em;
             background: #ffffff;
             color: #242424;
             text-align: left;
-            display: block;
-            margin-top: 5px;
         }
         .input-container i {
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #FFD700;
         }
         .login-container button {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px;
             background: #FFD700;
             color: #242424;
             border: none;
-            border-radius: 10px;
-            font-size: 1.2em;
+            border-radius: 8px;
+            font-size: 1.1em;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
@@ -110,16 +110,15 @@
             text-align: center;
         }
         footer {
-            background: #000000;
+            background-color: #000000;
             color: white;
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
             width: 100%;
-            margin-top: 20px;
-            border-radius: 15px 15px 0 0;
+            font-size: 0.9em;
         }
     </style>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FontAwesome für Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
@@ -129,22 +128,19 @@
     <main>
         <div class="login-container">
             <h2>Login</h2>
-        
-            <!-- Fehlermeldung anzeigen, falls Login fehlschlägt -->
             {% if error %}
             <p class="error-message">{{ error }}</p>
             {% endif %}
-        
             <form action="{{ url_for('login') }}" method="POST">
                 <label for="username">Benutzername:</label>
-                <input type="text" id="username" name="username" required>
-        
+                <div class="input-container">
+                    <input type="text" id="username" name="username" required>
+                </div>
                 <label for="password">Passwort:</label>
                 <div class="input-container">
                     <input type="password" id="password" name="password" required>
                     <i class="fas fa-eye" id="togglePassword"></i>
                 </div>
-        
                 <button type="submit">Anmelden</button>
             </form>
         </div>
@@ -153,9 +149,7 @@
         <p>&copy; 2025 Dönerhub.de/Gamedivers.de</p>
         <p>Disclaimer: Diese Seite ist rein für Hobby-, Privat- oder Satire-Zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten sind rein zufällig.</p>
     </footer>
-
     <script>
-        // Passwort sichtbar machen
         document.getElementById("togglePassword").addEventListener("click", function() {
             let passwordInput = document.getElementById("password");
             if (passwordInput.type === "password") {
@@ -169,6 +163,5 @@
             }
         });
     </script>
-
 </body>
 </html>

@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   web:
@@ -10,16 +11,15 @@ services:
       MYSQL_USER: flask_user
       MYSQL_PASSWORD: flask_password
       MYSQL_DATABASE: flask_app
-      MYSQL_ROOT_PASSWORD: rootpassword  # Wichtig für Root-Zugriff in app.py
+      MYSQL_ROOT_PASSWORD: rootpassword
     depends_on:
       db:
         condition: service_healthy
     networks:
       - app_network
 
-
   db:
-    image: mysql:8.0
+    image: mysql:8.0.34  # Specify a specific version
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -30,14 +30,15 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Uncommented init.sql
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -prootpassword || exit 1"]
       interval: 10s
+      timeout: 5s
       retries: 10
-      start_period: 420s  # Erhöht Wartezeit auf MySQL-Start
+      start_period: 180s
 
 volumes:
   mysql_data:

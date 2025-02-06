@@ -7,59 +7,16 @@ app = Flask(__name__, static_folder="/app/flask_app/Webserver-main/images", temp
 app.secret_key = 'your_secret_key'
 
 
-def get_db_connection():
-    """Stellt eine Verbindung zur MySQL-Datenbank her"""
+def get_db_connection(use_root=False):
     return mysql.connector.connect(
-        host=os.getenv('MYSQL_HOST', 'db'),  # Richtig für Docker
-        user=os.getenv('MYSQL_USER', 'flas_user'),
-        password=os.getenv('MYSQL_PASSWORD', 'flask_password'),
+        host=os.getenv('MYSQL_HOST', 'db'),
+        user='root' if use_root else os.getenv('MYSQL_USER', 'flask_user'),
+        password=os.getenv('MYSQL_ROOT_PASSWORD') if use_root else os.getenv('MYSQL_PASSWORD', 'flask_password'),
         database=os.getenv('MYSQL_DATABASE', 'flask_app')
     )
 
 
-def create_database():
-    """Erstellt die Datenbank-Tabelle 'users' und 'registration_requests', falls sie nicht existieren"""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # Prüfen, ob Datenbank existiert (nur für Docker/MySQL-Server)
-        cursor.execute("CREATE DATABASE IF NOT EXISTS flask_app;")
-        cursor.execute("USE flask_app;")
-
-        # Benutzer-Tabelle erstellen
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                password VARCHAR(255) NOT NULL,
-                role ENUM('user', 'admin', 'editor') DEFAULT 'user'
-            )
-        """)
-
-        # Registrierungstabelle erstellen
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS registration_requests (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                password VARCHAR(255) NOT NULL
-            )
-        """)
-
-        # Admin-User sicherstellen
-        admin_password_hash = generate_password_hash("Lappen01")
-        cursor.execute("""
-            INSERT INTO users (username, password, role) 
-            VALUES ('Admin', %s, 'admin')
-            ON DUPLICATE KEY UPDATE username=username;
-        """, (admin_password_hash,))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-        print("✅ Datenbank erfolgreich überprüft und erstellt!")
-    except Exception as e:
-        print(f"❌ Fehler bei der Datenbankerstellung: {e}")
+import time
 
 
 def initialize_database():
@@ -82,10 +39,6 @@ def initialize_database():
 
     except Exception as e:
         print(f"❌ Fehler beim Laden der ini.sql: {e}")
-
-if __name__ == '__main__':
-    initialize_database()
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 from flask import send_from_directory
@@ -435,4 +388,5 @@ def edit_user(user_id):
 
 if __name__ == '__main__':
     create_database()
+    initialize_database()
     app.run(host='0.0.0.0', port=5000, debug=True)

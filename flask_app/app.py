@@ -18,6 +18,51 @@ def get_db_connection(use_root=False):
 
 import time
 
+import time
+
+def create_database():
+    retries = 5
+    while retries > 0:
+        try:
+            conn = get_db_connection(use_root=True)
+            cursor = conn.cursor()
+
+            cursor.execute("CREATE DATABASE IF NOT EXISTS flask_app;")
+            cursor.execute("USE flask_app;")
+
+            # Tabellen erstellen
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    role ENUM('user', 'admin', 'editor') DEFAULT 'user'
+                )
+            """)
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS registration_requests (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL
+                )
+            """)
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print("✅ Datenbank erfolgreich erstellt!")
+            break  # Schleife verlassen, wenn erfolgreich
+
+        except mysql.connector.Error as err:
+            print(f"❌ Fehler bei der Datenbankerstellung: {err}")
+            retries -= 1
+            print(f"🔄 Neuer Versuch in 5 Sekunden... ({5 - retries}/5)")
+            time.sleep(5)
+
+    if retries == 0:
+        print("❌ Konnte die Datenbank nach mehreren Versuchen nicht erstellen!")
+
 
 def initialize_database():
     """Führt die ini.sql aus, um die Datenbank zu initialisieren"""

@@ -37,7 +37,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       retries: 10
-      start_period: 180s  # Erhöht Wartezeit auf MySQL-Start
+      start_period: 280s  # Erhöht Wartezeit auf MySQL-Start
 
 volumes:
   mysql_data:

@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS registration_requests (
 );
 
 INSERT INTO users (username, password, role) 
-VALUES ('Admin', '1$k3gK4qOs7RDbysv2$9234360b86c9da0495c3dc04ee95002ab6462ed2b0662c8f7d85e1ef85e09ef776b1663585886628443fa76201b36fa41aa8fdbb8fbddc5c54a2cc6a5a8e004b', 'admin')
+VALUES ('Admin', 'pbkdf2:sha256:1000000$z6xQxoW6plIVe6fV$a009a43c68c63247682d0e493ced3c7d978f2e7dd9c0fbf62b12ce0371e0a019', 'admin')
 ON DUPLICATE KEY UPDATE username=username;
 

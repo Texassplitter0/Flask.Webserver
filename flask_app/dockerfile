@@ -6,8 +6,11 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/flask_app
-COPY ./Webserver-main/images /app/flask_app/Webserver-main/images
+COPY ./Webserver-main/images /app/flask_app/images
+
+COPY init.sql /app/init.sql
 
 ENV FLASK_APP=flask_app.app
 ENV FLASK_RUN_HOST=0.0.0.0
+
 CMD ["flask", "run", "--host=0.0.0.0"]

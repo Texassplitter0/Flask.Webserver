@@ -10,11 +10,13 @@ services:
       MYSQL_USER: flask_user
       MYSQL_PASSWORD: flask_password
       MYSQL_DATABASE: flask_app
+      MYSQL_ROOT_PASSWORD: rootpassword  # Wichtig für Root-Zugriff in app.py
     depends_on:
       db:
-        condition: service_healthy  # Wartet, bis MySQL bereit ist
+        condition: service_healthy
     networks:
       - app_network
+
 
   db:
     image: mysql:8.0
@@ -34,8 +36,8 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
-      retries: 5
-      start_period: 360s  # Erhöht Wartezeit auf MySQL-Start
+      retries: 10
+      start_period: 180s  # Erhöht Wartezeit auf MySQL-Start
 
 volumes:
   mysql_data:

@@ -127,8 +127,11 @@
         <div class="box" style="background-image: url('images/background-live-map.webp');">
             <h2>LiveMap</h2>
             <div id="livemap-container">
-                <!-- Placeholder until authentication is checked -->
-                <p>Überprüfe Benutzerstatus...</p>
+                <iframe 
+                    src="http://213.239.192.7:8100" 
+                    title="BlueMap LiveMap" 
+                    loading="lazy">
+                </iframe>
             </div>
         </div>
         <div class="box" style="background-image: url('images/community-bg-MC.webp');">
@@ -149,30 +152,11 @@
                 document.getElementById('player-count').innerText = 'Nicht verfügbar';
                 console.error('Fehler beim Abrufen des Serverstatus:', error);
             });
-
-        // Check if user is logged in for LiveMap
-        const userIsLoggedIn = false; // Simulated authentication check
-
-        const liveMapContainer = document.getElementById('livemap-container');
-
-        if (userIsLoggedIn) {
-            liveMapContainer.innerHTML = `
-                <iframe 
-                    src="http://213.239.192.7:8100" 
-                    title="BlueMap LiveMap" 
-                    loading="lazy">
-                </iframe>
-            `;
-        } else {
-            liveMapContainer.innerHTML = `
-                <p>Bitte <a href="login.html" style="color: #FFD700;">melden Sie sich an</a>, um die LiveMap anzuzeigen.</p>
-            `;
-        }
     </script>
 
     <!-- Fußzeile für Impressum-->
     <footer>
-        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
         <p>Not an official Minecraft website. We are not associated with Mojang or Microsoft. Minecraft™ is a registered trademark of Mojang Studios.</p>
     </footer>

@@ -129,7 +129,7 @@
             <h1>Benutzer bearbeiten</h1>
             <form method="POST">
                 <label for="username">Benutzername:</label>
-                <input type="text" id="username" name="username">
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
                 
                 <label for="password">Passwort (leer lassen, um nicht zu ändern):</label>
                 <input type="password" id="password" name="password">

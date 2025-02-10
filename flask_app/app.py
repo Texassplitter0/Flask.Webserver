@@ -317,7 +317,7 @@ def admin_approve(request_id):
         if request_data:
             # In die Haupt-User-Tabelle einfügen
             cursor.execute("INSERT INTO users (username, password, email, notes, role) VALUES (%s, %s, %s, %s, 'user')",
-                           (request_data['username'], request_data['password'], request_data['email']))
+                           (request_data['username'], request_data['password'], request_data['email'], request_data['notes']))
             # Registrierungsanfrage löschen
             cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
             conn.commit()

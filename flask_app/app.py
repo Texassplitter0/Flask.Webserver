@@ -71,7 +71,7 @@ def initialize_database():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        with open("init.sql", "r") as f:
+        with open("/app/flask_app/init.sql", "r") as f:
             sql_commands = f.read()
 
         for command in sql_commands.split(";"):

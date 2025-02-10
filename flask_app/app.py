@@ -309,16 +309,13 @@ def admin_approve(request_id):
     if 'role' in session and session['role'] == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-
-        # Benutzer aus der Registrierungstabelle holen
         cursor.execute("SELECT * FROM registration_requests WHERE id = %s", (request_id,))
         request_data = cursor.fetchone()
 
         if request_data:
-            # In die Haupt-User-Tabelle einfügen
+            notes = request_data.get('notes', '')
             cursor.execute("INSERT INTO users (username, password, email, notes, role) VALUES (%s, %s, %s, %s, 'user')",
-                           (request_data['username'], request_data['password'], request_data['email'], None))
-            # Registrierungsanfrage löschen
+                           (request_data['username'], request_data['password'], request_data['email'], notes))
             cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
             conn.commit()
 
@@ -328,12 +325,12 @@ def admin_approve(request_id):
     return redirect(url_for('adminpanel'))
 
 
+
 @app.route('/admin_reject/<int:request_id>')
 def admin_reject(request_id):
     if 'role' in session and session['role'] == 'admin':
         conn = get_db_connection()
         cursor = conn.cursor()
-
         cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
         conn.commit()
         cursor.close()

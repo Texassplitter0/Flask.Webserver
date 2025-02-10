@@ -254,7 +254,6 @@ def login():
         if user and user['password'] and check_password_hash(user['password'], password):
             session['logged_in'] = True 
             session['user'] = username
-            session['email'] = user.get('email')
             session['user_id'] = user['id']
             session['role'] = user['role']
             return redirect(url_for('welcomeuser'))
@@ -308,8 +307,8 @@ def admin_approve(request_id):
 
         if request_data:
             # In die Haupt-User-Tabelle einfügen
-            cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, 'user')",
-                           (request_data['username'], request_data['password']))
+            cursor.execute("INSERT INTO users (username, password, email, role) VALUES (%s, %s, %s, 'user')",
+                           (request_data['username'], request_data['password'], request_data['email']))
             # Registrierungsanfrage löschen
             cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
             conn.commit()
@@ -349,12 +348,13 @@ def admin():
         if request.method == 'POST':  
             new_username = request.form['username']
             new_password = request.form['password']
+            new_email = request.form['email']
             role = request.form['role']
 
             hashed_password = generate_password_hash(new_password)
 
-            cursor.execute('INSERT INTO users (username, password, role) VALUES (%s, %s, %s)', 
-                           (new_username, hashed_password, role))
+            cursor.execute('INSERT INTO users (username, password, email, role) VALUES (%s, %s, %s, %s)', 
+                           (new_username, hashed_password, new_email, role))
             conn.commit()
 
         cursor.execute('SELECT id, username, role FROM users')
@@ -410,15 +410,16 @@ def edit_user(user_id):
         if request.method == 'POST':
             new_username = request.form['username']
             new_password = request.form['password']
+            new_email = request.form['email']
             role = request.form['role']
 
             if new_password:
                 hashed_password = generate_password_hash(new_password)
-                cursor.execute('UPDATE users SET username = %s, password = %s, role = %s WHERE id = %s', 
-                               (new_username, hashed_password, role, user_id))
+                cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, role = %s WHERE id = %s', 
+                               (new_username, hashed_password, new_email, role, user_id))
             else:
-                cursor.execute('UPDATE users SET username = %s, role = %s WHERE id = %s', 
-                               (new_username, role, user_id))
+                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s WHERE id = %s', 
+                               (new_username, new_email, role, user_id))
 
             conn.commit()
             cursor.close()

@@ -146,6 +146,10 @@
             <span>Benutzername: </span> {{ user.username }}
         </div>
         <div class="profile-info">
+            <i class="fas fa-envelope"></i>
+            <span>E-Mail: </span> {{ user.email if user.email else 'Keine E-Mail hinterlegt' }}
+        </div>
+        <div class="profile-info">
             <i class="fas fa-shield-alt"></i>
             <span>Rolle: </span> {{ user.role }}
         </div>

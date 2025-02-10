@@ -18,7 +18,7 @@ services:
       db:
         condition: service_healthy
     networks:
-      - app_network
+      - main
 
   db:
     image: mysql:8.0.34
@@ -34,7 +34,7 @@ services:
       - mysql_data:/var/lib/mysql
       - shared_data:/docker-entrypoint-initdb.d  # Gemeinsames Volume für init.sql
     networks:
-      - app_network
+      - main
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -prootpassword || exit 1"]
       interval: 10s
@@ -47,5 +47,5 @@ volumes:
   shared_data:  # Gemeinsames Volume
 
 networks:
-  app_network:
-    driver: bridge
+  main:
+    external: true

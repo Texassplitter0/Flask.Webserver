@@ -12,6 +12,8 @@ services:
       MYSQL_PASSWORD: flask_password
       MYSQL_DATABASE: flask_app
       MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - shared_data:/shared
     depends_on:
       db:
         condition: service_healthy
@@ -30,8 +32,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./flask_app/init.sql:/docker-entrypoint-initdb.d/init.sql
-
+      - shared_data:/docker-entrypoint-initdb.d  # Gemeinsames Volume für init.sql
     networks:
       - app_network
     healthcheck:
@@ -39,10 +40,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 240s
+      start_period: 180s
 
 volumes:
   mysql_data:
+  shared_data:  # Gemeinsames Volume
 
 networks:
   app_network:

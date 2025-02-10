@@ -137,8 +137,8 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
                     <th>{{ user.notes }}</th>
+                    <td>{{ user.role }}</td>
                     <td><a href="{{ url_for('edit_user', user_id=user.id) }}">Bearbeiten</a></td>
                     <td><a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('Benutzer wirklich löschen?');">Löschen</a></td>
                 </tr>
@@ -156,14 +156,14 @@
                 <input type="password" name="password" required>
                 <label>Email:</label>
                 <input typex="text" name="email">
+                <label>Notiz:</label>
+                <input type="text" name="notes">
                 <label>Rolle:</label>
                 <select name="role">
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                     <option value="editor">Editor</option>
                 </select>
-                <label>Notiz:</label>
-                <input type="text" name="notes">
                 <button type="submit">Hinzufügen</button>
             </form>
             <br>

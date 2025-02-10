@@ -364,8 +364,10 @@ def admin():
                            (new_username, hashed_password, new_email, new_notes, role))
             conn.commit()
 
-        cursor.execute('SELECT id, username, role FROM users')
+        cursor.execute('SELECT id, username, role, notes FROM users')
         users = cursor.fetchall()
+        for user in users:
+            user['notes'] = user.get('notes', 'Keine Notiz')
         cursor.close()
         conn.close()
 

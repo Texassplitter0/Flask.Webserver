@@ -32,18 +32,27 @@ def create_database():
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     username VARCHAR(50) UNIQUE NOT NULL,
-                    email VARCHAR(100),
                     password VARCHAR(255) NOT NULL,
+                    email VARCHAR(50) NOT NULL,
+                    notes VARCHAR(200) NOT NULL,
                     role ENUM('user', 'admin', 'editor') DEFAULT 'user'
-                )
+                );
             """)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS registration_requests (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     username VARCHAR(50) UNIQUE NOT NULL,
-                    email VARCHAR(100),
-                    password VARCHAR(255) NOT NULL
-                )
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(50) NOT NULL
+                );
+            """)
+            cursor.execute("""
+                INSERT INTO users (username, password, email, role) 
+                VALUES ('Admin', 'pbkdf2:sha256:1000000$z6xQxoW6plIVe6fV$a009a43c68c63247682d0e493ced3c7d978f2e7dd9c0fbf62b12ce0371e0a019', 'admin@gamedivers.de', 'admin')
+                ON DUPLICATE KEY UPDATE 
+                    password = VALUES(password),
+                    email = VALUES(email),
+                    role = VALUES(role);
             """)
 
             conn.commit()
@@ -412,14 +421,15 @@ def edit_user(user_id):
             new_password = request.form['password']
             new_email = request.form['email']
             role = request.form['role']
+            new_notes = request.form['notes']
 
             if new_password:
                 hashed_password = generate_password_hash(new_password)
-                cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, role = %s WHERE id = %s', 
-                               (new_username, hashed_password, new_email, role, user_id))
+                cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, role = %s, notes = %s WHERE id = %s', 
+                               (new_username, hashed_password, new_email, role, new_notes, user_id))
             else:
-                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s WHERE id = %s', 
-                               (new_username, new_email, role, user_id))
+                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s, notes = %s, WHERE id = %s', 
+                               (new_username, new_email, role, new_notes, user_id))
 
             conn.commit()
             cursor.close()

@@ -417,19 +417,18 @@ def edit_user(user_id):
         user = cursor.fetchone()
 
         if request.method == 'POST':
-            new_username = request.form['username']
-            new_password = request.form['password']
-            new_email = request.form['email']
+            username = request.form['username']
+            password = request.form['password']
+            email = request.form['email']
+            notes = request.form['notes']
             role = request.form['role']
-            new_notes = request.form['notes']
 
-            if new_password:
-                hashed_password = generate_password_hash(new_password)
-                cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, role = %s, notes = %s WHERE id = %s', 
-                               (new_username, hashed_password, new_email, role, new_notes, user_id))
+            if password:
+                cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, notes = %s, role = %s WHERE id = %s',
+                               (username, password, email, notes, role, user_id))
             else:
-                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s, notes = %s WHERE id = %s', 
-                               (new_username, new_email, role, new_notes, user_id))
+                cursor.execute('UPDATE users SET username = %s, email = %s, notes = %s, role = %s WHERE id = %s',
+                               (username, email, notes, role, user_id))
 
             conn.commit()
             cursor.close()

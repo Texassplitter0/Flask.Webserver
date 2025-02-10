@@ -316,7 +316,7 @@ def admin_approve(request_id):
 
         if request_data:
             # In die Haupt-User-Tabelle einfügen
-            cursor.execute("INSERT INTO users (username, password, email, role) VALUES (%s, %s, %s, 'user')",
+            cursor.execute("INSERT INTO users (username, password, email, notes, role) VALUES (%s, %s, %s, %s'user')",
                            (request_data['username'], request_data['password'], request_data['email']))
             # Registrierungsanfrage löschen
             cursor.execute("DELETE FROM registration_requests WHERE id = %s", (request_id,))
@@ -359,11 +359,12 @@ def admin():
             new_password = request.form['password']
             new_email = request.form['email']
             role = request.form['role']
+            new_notes = request.form['notes']
 
             hashed_password = generate_password_hash(new_password)
 
-            cursor.execute('INSERT INTO users (username, password, email, role) VALUES (%s, %s, %s, %s)', 
-                           (new_username, hashed_password, new_email, role))
+            cursor.execute('INSERT INTO users (username, password, email, notes, role) VALUES (%s, %s, %s, %s, %s)', 
+                           (new_username, hashed_password, new_email, new_notes, role))
             conn.commit()
 
         cursor.execute('SELECT id, username, role FROM users')

@@ -1,202 +1,49 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e2f;
-            color: #ffffff;
-            text-align: center;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            background: linear-gradient(135deg, #222, #333);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        nav a {
-            color: #FFD700;
-            text-decoration: none;
-            padding: 12px 20px;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        nav a:hover {
-            background: rgba(255, 215, 0, 0.2);
-        }
-        header {
-            background: #FFD700;
-            color: #222;
-            padding: 20px;
-            font-size: 1.8em;
-            font-weight: bold;
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        main {
-            padding: 30px;
-        }
-        .box {
-            background: #29293d;
-            color: #ffffff;
-            border-radius: 15px;
-            padding: 40px;
-            max-width: 700px;
-            margin: 20px auto;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #333;
-            color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #FFD700;
-            text-align: center;
-        }
-        th {
-            background: #444;
-        }
-        a {
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        input, select, button {
-            width: 95%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1em;
-            outline: none;
-            margin-bottom: 10px;
-        }
-        button {
-            background: #FFD700;
-            color: #222;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background: #e6b800;
-        }
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            margin-top: 30px;
-            border-radius: 15px 15px 0 0;
-        }
-    </style>
-</head>
-<body>
-    <nav>
-        <a href="{{ url_for('welcome') }}">Home</a>
-        <a href="{{ url_for('adminpanel') }}">Admin Panel</a>
-    </nav>
+services:
+  web:
+    build: .
+    ports:
+      - "10100:5000"
+    environment:
+      FLASK_ENV: production
+      MYSQL_HOST: db
+      MYSQL_USER: flask_user
+      MYSQL_PASSWORD: flask_password
+      MYSQL_DATABASE: flask_app
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - shared_data:/shared
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - main
 
-    <header>
-        Admin Panel - Benutzerverwaltung
-    </header>
+  db:
+    image: mysql:8.0.34
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: flask_app
+      MYSQL_USER: flask_user
+      MYSQL_PASSWORD: flask_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - shared_data:/docker-entrypoint-initdb.d
+    networks:
+      - main
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -prootpassword || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 180s
 
-    <main>
-        <!-- Benutzerliste -->
-        <div class="box">
-            <h2>Benutzerliste</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Benutzername</th>
-                    <th>Email</th>
-                    <th>Rolle</th>
-                    <th>Notiz</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                </tr>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
-                    <th>{{ user.notes }}</th>
-                    <td><a href="{{ url_for('edit_user', user_id=user.id) }}">Bearbeiten</a></td>
-                    <td><a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('Benutzer wirklich löschen?');">Löschen</a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+volumes:
+  mysql_data:
+  shared_data:
 
-        <!-- Neue Benutzer hinzufügen -->
-        <div class="box">
-            <h2>Neuen Benutzer hinzufügen</h2>
-            <form method="POST" action="{{ url_for('admin') }}">
-                <label>Benutzername:</label>
-                <input type="text" name="username" required>
-                <label>Passwort:</label>
-                <input type="password" name="password" required>
-                <label>Email:</label>
-                <input typex="text" name="email">
-                <label>Rolle:</label>
-                <select name="role">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                    <option value="editor">Editor</option>
-                </select>
-                <label>Notiz:</label>
-                <input type="text" name="notes">
-                <button type="submit">Hinzufügen</button>
-            </form>
-            <br>
-            <a href="{{ url_for('welcome') }}">Startseite</a>
-        </div>
-
-        <!-- Registrierungsanfragen -->
-        <div class="box">
-            <h2>Registrierungsanfragen</h2>
-            {% if registration_requests %}
-            <table>
-                <tr>
-                    <th>Benutzername</th>
-                    <th>Aktionen</th>
-                </tr>
-                {% for request in registration_requests %}
-                <tr>
-                    <td>{{ request.username }}</td>
-                    <td>
-                        <a href="{{ url_for('admin_approve', request_id=request.id) }}" style="color: green;">✔ Akzeptieren</a> |
-                        <a href="{{ url_for('admin_reject', request_id=request.id) }}" style="color: red;">✖ Ablehnen</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <p>Keine offenen Registrierungsanfragen.</p>
-            {% endif %}
-        </div>
-    </main>
-
-    <footer>
-        &copy; 2025 DönerHub.de/Gamedivers.de - Admin Panel - Alle Rechte vorbehalten
-    </footer>
-</body>
-</html>
+networks:
+  main:
+    external: true

@@ -28,8 +28,6 @@ def create_database():
 
             cursor.execute("CREATE DATABASE IF NOT EXISTS flask_app;")
             cursor.execute("USE flask_app;")
-
-            # Tabellen erstellen
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,7 +37,6 @@ def create_database():
                     role ENUM('user', 'admin', 'editor') DEFAULT 'user'
                 )
             """)
-
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS registration_requests (
                     id INT AUTO_INCREMENT PRIMARY KEY,

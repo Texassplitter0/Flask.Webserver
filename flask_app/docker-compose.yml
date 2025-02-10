@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   web:
     build: .
@@ -17,7 +19,7 @@ services:
       - app_network
 
   db:
-    image: mysql:8.0.34  # Specify a specific version
+    image: mysql:8.0.34
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -28,7 +30,8 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      #- ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Uncommented init.sql
+      - ./flask_app/init.sql:/docker-entrypoint-initdb.d/init.sql
+
     networks:
       - app_network
     healthcheck:
@@ -36,7 +39,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 200s
+      start_period: 180s
 
 volumes:
   mysql_data:

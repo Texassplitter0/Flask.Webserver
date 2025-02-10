@@ -426,7 +426,7 @@ def edit_user(user_id):
                 cursor.execute('UPDATE users SET username = %s, password = %s, email = %s, role = %s, notes = %s WHERE id = %s', 
                                (new_username, hashed_password, new_email, role, new_notes, user_id))
             else:
-                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s, notes = %s, WHERE id = %s', 
+                cursor.execute('UPDATE users SET username = %s, email = %s, role = %s, notes = %s WHERE id = %s', 
                                (new_username, new_email, role, new_notes, user_id))
 
             conn.commit()

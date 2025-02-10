@@ -18,7 +18,6 @@ def get_db_connection(use_root=False):
 
 import time
 
-import time
 
 def create_database():
     retries = 5
@@ -35,6 +34,7 @@ def create_database():
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     username VARCHAR(50) UNIQUE NOT NULL,
+                    email VARCHAR(100),
                     password VARCHAR(255) NOT NULL,
                     role ENUM('user', 'admin', 'editor') DEFAULT 'user'
                 )
@@ -44,6 +44,7 @@ def create_database():
                 CREATE TABLE IF NOT EXISTS registration_requests (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     username VARCHAR(50) UNIQUE NOT NULL,
+                    email VARCHAR(100),
                     password VARCHAR(255) NOT NULL
                 )
             """)
@@ -176,7 +177,7 @@ def profile():
         # Benutzerdaten aus der Datenbank abrufen
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, username, role FROM users WHERE username = %s', (username,))
+        cursor.execute('SELECT id, username, email, role FROM users WHERE username = %s', (username,))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
@@ -255,6 +256,7 @@ def login():
         if user and user['password'] and check_password_hash(user['password'], password):
             session['logged_in'] = True 
             session['user'] = username
+            session['email'] = user.get('email')
             session['user_id'] = user['id']
             session['role'] = user['role']
             return redirect(url_for('welcomeuser'))
@@ -271,6 +273,7 @@ def register():
 
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form.get('email')
         password = request.form['password']
 
         conn = get_db_connection()
@@ -285,7 +288,7 @@ def register():
         else:
             # Registrierung als ausstehende Anfrage speichern
             hashed_password = generate_password_hash(password)
-            cursor.execute("INSERT INTO registration_requests (username, password) VALUES (%s, %s)", (username, hashed_password))
+            cursor.execute("INSERT INTO registration_requests (username, email, password) VALUES (%s, %s, %s)", (username, email, hashed_password))
             conn.commit()
             success = "✅ Registrierung erfolgreich! Ein Admin muss die Anfrage bestätigen."
 

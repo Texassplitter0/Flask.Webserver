@@ -72,6 +72,34 @@
             position: relative;
             z-index: 1;
         }
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+        }
+        .bug {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #scoreBoard {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 24px;
+        }
+        #highscoreTable {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            color: white;
+            font-size: 20px;
+        }
         iframe {
             border: none;
             width: 100%;
@@ -128,15 +156,21 @@
             <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
             <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
         </div>
+        <div class="box" style="background-color: #333;">
+            <div id="gameArea"></div>
+            <div id="scoreBoard">Score: 0</div>
+            <div id="highscoreTable"></div>
+        </div>
     </main>
 
-    <!-- Fußzeile für Impressum-->
+    <!-- Fußzeile -->
     <footer>
         <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a>
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
         <p>HELLDIVERS™ 2 PRIVACY POLICYUSER AGREEMENTSoftware subject to license:HEALTH WARNINGWARNING: IF YOU HAVE A HISTORY OF EPILEPSY OR SEIZURES, CONSULT A DOCTOR BEFORE USE. CERTAIN PATTERNS MAY TRIGGER SEIZURES WITH NO PRIOR HISTORY. BEFORE USING AND FOR MORE DETAILS, SEE IMPORTANT HEALTH AND SAFETY WARNINGS ©2023 Sony Interactive Entertainment LLC. Developed by Arrowhead Game Studios AB. Helldivers is a registered trademark of Sony Interactive Entertainment LLC and related companies in the U.S. and other countries.</p>
     </footer>
 
+    <!-- Script für zufallstext-->
     <script>
         const sentences = [
             "Incoming friendly fire! Dodge - or don't. Your call.",
@@ -156,6 +190,61 @@
             const randomSentence = sentences[randomIndex];
             document.getElementById("random-text").textContent = randomSentence;
         };
+    </script>
+
+    <!-- Minigame Logik -->
+    <script>
+        const username = "{{ username }}"; // Username wird vom Server eingefügt
+        let score = 0;
+        const gameArea = document.getElementById('gameArea');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const highscoreTable = document.getElementById('highscoreTable');
+
+        function createBug() {
+            const bug = document.createElement('div');
+            bug.classList.add('bug');
+            bug.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            bug.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+
+            bug.addEventListener('click', () => {
+                score++;
+                scoreBoard.innerText = `Score: ${score}`;
+                bug.remove();
+                saveScore();
+            });
+
+            gameArea.appendChild(bug);
+            setTimeout(() => bug.remove(), 5000); // Bug verschwindet nach x Sekunden
+        }
+
+        function saveScore() {
+            fetch('/save_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, score: score })
+            })
+            .then(response => response.json())
+            .then(data => updateHighscore(data));
+        }
+
+        function updateHighscore(data) {
+            highscoreTable.innerHTML = '<h3>Highscores:</h3>';
+            data.highscores.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.innerText = `${entry.username}: ${entry.score}`;
+                highscoreTable.appendChild(entryDiv);
+            });
+        }
+
+        // Initial Highscores laden
+        fetch('/get_highscores')
+            .then(response => response.json())
+            .then(data => updateHighscore(data));
+
+        // Start des Spiels
+        setInterval(createBug, 1000);
     </script>
 </body>
 </html>

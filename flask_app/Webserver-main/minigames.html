@@ -125,6 +125,20 @@
         #scoreBoard, #highscoreTable {
             margin-top: 10px;
         }
+        #restartButton {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #333;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #restartButton:hover {
+            background-color: #ffb700;
+        }
     </style>
 </head>
 <body>
@@ -146,6 +160,7 @@
             <h2>Catch the bug</h2>
             <div id="gameArea"></div>
             <div id="scoreBoard">Score: 0</div>
+            <button id="restartButton">Neustart</button>
             <div id="highscoreTable"></div>
         </div>
         <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
@@ -167,8 +182,12 @@
         const gameArea = document.getElementById('gameArea');
         const scoreBoard = document.getElementById('scoreBoard');
         const highscoreTable = document.getElementById('highscoreTable');
+        const restartButton = document.getElementById('restartButton');
         let gameInterval;
+        let difficultyInterval;
+        let gameTimeout;
         let bugSpawnRate = 1000; // Start mit 1 Sekunde
+        let bugLifetime = 4000; // Lebensdauer der Bugs
 
         function createBug() {
             const bug = document.createElement('div');
@@ -184,12 +203,13 @@
             });
 
             gameArea.appendChild(bug);
-            setTimeout(() => bug.remove(), 4000);
+            setTimeout(() => bug.remove(), bugLifetime);
         }
 
         function adjustDifficulty() {
-            if (bugSpawnRate > 200) { // Mindestabstand 200ms
-                bugSpawnRate -= 100; // Erhöht die Geschwindigkeit alle 5 Sekunden
+            if (bugSpawnRate > 200) {
+                bugSpawnRate -= 100;
+                bugLifetime = Math.max(1000, bugLifetime - 300); // Reduziert Lebensdauer der Bugs
                 clearInterval(gameInterval);
                 gameInterval = setInterval(createBug, bugSpawnRate);
             }
@@ -216,16 +236,26 @@
 
         function endGame() {
             clearInterval(gameInterval);
+            clearInterval(difficultyInterval);
+            clearTimeout(gameTimeout);
             alert(`Spiel beendet! Dein Score: ${score}`);
         }
 
-        fetch('/get_highscores')
-            .then(response => response.json())
-            .then(data => updateHighscore(data));
+        function startGame() {
+            score = 0;
+            bugSpawnRate = 1000;
+            bugLifetime = 4000;
+            scoreBoard.innerText = `Score: ${score}`;
+            gameArea.innerHTML = '';
+            gameInterval = setInterval(createBug, bugSpawnRate);
+            difficultyInterval = setInterval(adjustDifficulty, 5000);
+            gameTimeout = setTimeout(endGame, 60000);
+            fetch('/get_highscores')
+                .then(response => response.json())
+                .then(data => updateHighscore(data));
+        }
 
-        gameInterval = setInterval(createBug, bugSpawnRate);
-        setInterval(adjustDifficulty, 5000); // Erhöht die Schwierigkeit alle 5 Sekunden
-        setTimeout(endGame, 60000);
+        restartButton.addEventListener('click', startGame);
     </script>
 </body>
 </html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboards</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            text-align: center;
+            background-image: url('images/BG-DönerHub-Siegel.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+        }
+        header h1 {
+            margin: 0;
+            color: #2C2C2C;
+        }
+        header h2 {
+            color: #2C2C2C;
+            margin-top: 10px;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #333;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        .cta {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #333;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .cta:hover {
+            background-color: #ffb700;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
+        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('memecoin') }}">Memecoin</a>
+        <a href="{{ url_for('profile') }}">Profil</a>
+    </nav>
+
+    <header>
+        <h1>Scoreboards</h1>
+        <h2>Die Scoreboards unserer Minigames für die die es interessiert</h2>
+    </header>
+
+    <main>
+        <div class="box">
+            <h2>Catch the bug</h2>
+            <div id="highscoreTable"></div>
+        </div>
+        <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
+            <h2>Community</h2>
+            <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
+            <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+    </footer>
+
+
+    <script>
+        const username = "{{ username }}";
+        let score = 0;
+        const gameArea = document.getElementById('gameArea');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const highscoreTable = document.getElementById('highscoreTable');
+        const restartButton = document.getElementById('restartButton');
+        let gameInterval;
+        let difficultyInterval;
+        let gameTimeout;
+        let bugSpawnRate = 1000; // Start mit 1 Sekunde
+        let bugLifetime = 4000; // Lebensdauer der Bugs
+
+        function updateAllHighscores(data) {
+    highscoreTable.innerHTML = '<h2>Highscores:</h2>';
+
+    for (const [game, scores] of Object.entries(data)) {
+        const gameDiv = document.createElement('div');
+        gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
+
+        scores.forEach(entry => {
+            const entryDiv = document.createElement('div');
+            entryDiv.innerText = `${entry.username}: ${entry.score}`;
+            gameDiv.appendChild(entryDiv);
+        });
+
+        highscoreTable.appendChild(gameDiv);
+        }
+    }
+
+    // Hilfsfunktion für schönere Spielnamen
+    function formatGameName(gameKey) {
+        const gameNames = {
+            'catch_the_bug': 'Catch the Bug',
+            'space_invader': 'Space Invader'
+            // Hier weitere Spiele einfügen
+        };
+        return gameNames[gameKey] || gameKey;
+    }
+
+    // Abrufen aller Highscores beim Laden der Seite
+    fetch('/get_all_highscores')
+        .then(response => response.json())
+        .then(data => updateAllHighscores(data));
+
+
+    function endGame() {
+        clearInterval(gameInterval);
+        clearInterval(difficultyInterval);
+        clearTimeout(gameTimeout);
+        alert(`Spiel beendet! Dein Score: ${score}`);
+    }
+
+    </script>
+</body>
+</html>

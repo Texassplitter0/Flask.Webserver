@@ -518,23 +518,25 @@ def get_highscores():
 def get_all_highscores():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
-
-    # Abrufen aller Highscores, gruppiert nach Spiel
-    cur.execute('SELECT username, score, game FROM highscores ORDER BY game, score DESC')
+    
+    # Abfrage der Highscores inkl. Spielnamen aus der Datenbank
+    cur.execute('SELECT game, username, score FROM highscores ORDER BY game, score DESC')
     highscores = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    # Gruppiere Highscores nach Spiel
-    highscores = {}
+    # Gruppierung der Highscores nach Spiel
+    grouped_highscores = {}
     for entry in highscores:
         game = entry['game']
-        if game not in highscores:
-            highscores[game] = []
-        highscores[game].append({'username': entry['username'], 'score': entry['score']})
+        if game not in grouped_highscores:
+            grouped_highscores[game] = []
+        grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
 
-    return jsonify(highscores)
+    # Rueckgabe der Highscores als JSON
+    return jsonify(grouped_highscores)
+
 
 
 

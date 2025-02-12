@@ -559,7 +559,7 @@ def add_header(response):
 @app.route('/remove_background/helldivers-bug.png')
 def remove_background(filename):
     image_path = os.path.join(app.static_folder, filename)
-    image = Image.open(image_path).convert("RGBA")
+    image = image.open(image_path).convert("RGBA")
 
     datas = image.getdata()
     new_data = []

@@ -516,29 +516,37 @@ def get_highscores():
 
 @app.route('/get_all_highscores')
 def get_all_highscores():
-    conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
-    
-    # Sicherstellen, dass die Spalte 'game' existiert
-    cur.execute('ALTER TABLE game_db ADD COLUMN IF NOT EXISTS game VARCHAR(50) DEFAULT "catch_the_bug"')
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor(dictionary=True)
 
-    # Abfrage der Highscores inkl. Spielnamen aus der Datenbank
-    cur.execute('SELECT game, username, score FROM game_db ORDER BY game, score DESC')
-    highscores = cur.fetchall()
+        # Sicherstellen, dass die Spalte 'game' existiert
+        cur.execute('SHOW COLUMNS FROM game_db LIKE "game"')
+        result = cur.fetchone()
+        if not result:
+            cur.execute('ALTER TABLE game_db ADD COLUMN game VARCHAR(50) DEFAULT "catch_the_bug"')
 
-    cur.close()
-    conn.close()
+        # Abfrage der Highscores inkl. Spielnamen aus der Datenbank
+        cur.execute('SELECT game, username, score FROM game_db ORDER BY game, score DESC')
+        highscores = cur.fetchall()
 
-    # Gruppierung der Highscores nach Spiel
-    grouped_highscores = {}
-    for entry in highscores:
-        game = entry['game']
-        if game not in grouped_highscores:
-            grouped_highscores[game] = []
-        grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
+        cur.close()
+        conn.close()
 
-    # Rueckgabe der Highscores als JSON
-    return jsonify(grouped_highscores)
+        # Gruppierung der Highscores nach Spiel
+        grouped_highscores = {}
+        for entry in highscores:
+            game = entry['game']
+            if game not in grouped_highscores:
+                grouped_highscores[game] = []
+            grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
+
+        # Rueckgabe der Highscores als JSON
+        return jsonify(grouped_highscores)
+
+    except Exception as e:
+        print(f"Fehler beim Abrufen der Highscores: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.after_request
 def add_header(response):

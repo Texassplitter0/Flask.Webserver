@@ -488,7 +488,7 @@ def save_score():
         conn.close()
         
     except Exception as e:
-        print(f\"Fehler beim Speichern des Scores: {e}\")  # Fehler-Log
+        print(f"Fehler beim Speichern des Scores: {e}")  # Fehler-Log
 
     return get_highscores()
 

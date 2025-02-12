@@ -527,14 +527,14 @@ def get_all_highscores():
     conn.close()
 
     # Gruppiere Highscores nach Spiel
-    grouped_highscores = {}
+    highscores = {}
     for entry in highscores:
         game = entry['game']
-        if game not in grouped_highscores:
-            grouped_highscores[game] = []
-        grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
+        if game not in highscores:
+            highscores[game] = []
+        highscores[game].append({'username': entry['username'], 'score': entry['score']})
 
-    return jsonify(grouped_highscores)
+    return jsonify(highscores)
 
 
 

@@ -462,22 +462,36 @@ def save_score():
     username = data['username']
     score = data['score']
 
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT score FROM highscores WHERE username = %s', (username,))
-    result = cur.fetchone()
-
-    if result:
-        if score > result[0]:
-            cur.execute('UPDATE highscores SET score = %s WHERE username = %s', (score, username))
-    else:
-        cur.execute('INSERT INTO highscores (username, score) VALUES (%s, %s)', (username, score))
-
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Tabelle highscores in der richtigen Datenbank erstellen
+        cur.execute('''CREATE TABLE IF NOT EXISTS highscores (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        username VARCHAR(255) NOT NULL,
+                        score INT NOT NULL
+                      )''')
+        
+        # Überprüfen, ob der Benutzer bereits einen Highscore hat
+        cur.execute('SELECT score FROM highscores WHERE username = %s', (username,))
+        result = cur.fetchone()
+        
+        if result:
+            if score > result[0]:
+                cur.execute('UPDATE highscores SET score = %s WHERE username = %s', (score, username))
+        else:
+            cur.execute('INSERT INTO highscores (username, score) VALUES (%s, %s)', (username, score))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+    except Exception as e:
+        print(f\"Fehler beim Speichern des Scores: {e}\")  # Fehler-Log
 
     return get_highscores()
+
 
 @app.route('/get_highscores')
 def get_highscores():

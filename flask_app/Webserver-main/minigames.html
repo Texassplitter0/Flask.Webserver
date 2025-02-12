@@ -206,15 +206,39 @@
             .then(data => updateHighscore(data));
         }
 
-        function updateHighscore(data) {
+        function updateAllHighscores(data) {
             const highscoreTable = document.getElementById('highscoreTable');
-            highscoreTable.innerHTML = '<h3>Highscores:</h3>';
-            data.highscores.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.innerText = `${entry.username}: ${entry.score}`;
-                highscoreTable.appendChild(entryDiv);
-            });
+            highscoreTable.innerHTML = '<h2>Highscores:</h2>';
+
+            // Highscores nach Spiel anzeigen
+            for (const [game, scores] of Object.entries(data)) {
+                const gameDiv = document.createElement('div');
+                gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
+
+                scores.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.innerText = `${entry.username}: ${entry.score}`;
+                    gameDiv.appendChild(entryDiv);
+                });
+
+                highscoreTable.appendChild(gameDiv);
+            }
         }
+
+        // Hilfsfunktion, um den Spielnamen schön anzuzeigen
+        function formatGameName(gameKey) {
+            const gameNames = {
+                'catch_the_bug': 'Catch the Bug',
+                'space_invader': 'Space Invader'
+                // Weitere Spiele hier einfügen
+            };
+            return gameNames[gameKey] || gameKey;
+        }
+
+        // Abrufen der Highscores beim Laden der Seite
+        fetch('/get_all_highscores')
+            .then(response => response.json())
+            .then(data => updateAllHighscores(data));
 
         function endGame() {
             clearInterval(gameInterval);

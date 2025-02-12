@@ -265,6 +265,13 @@ def scoreboard():
     return redirect(url_for('index'))
 
 
+@app.route('/flyingengineer')
+def flyingengineer():
+    if session.get('logged_in'):
+        return render_template('flyingengineer.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
 # <------------------------------------------Restliche-Routes------------------------------------------------------------>
 @app.route('/login', methods=['GET', 'POST'])
 def login():

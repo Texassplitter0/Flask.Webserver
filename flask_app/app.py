@@ -538,7 +538,7 @@ def get_all_highscores():
 
 
 
-@app.route('/remove_background/helldivers-bug.webp')
+@app.route('/remove_background/helldivers-bug.png')
 def remove_background(filename):
     image_path = os.path.join(app.static_folder, filename)
     image = Image.open(image_path).convert("RGBA")

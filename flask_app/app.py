@@ -469,37 +469,21 @@ def save_score():
     username = data['username']
     score = data['score']
     game = data.get('game', 'catch_the_bug')  # Standardwert 'catch_the_bug'
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        
-        # Tabelle highscores in der richtigen Datenbank erstellen
-        cur.execute('''CREATE TABLE IF NOT EXISTS highscores (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        username VARCHAR(255) NOT NULL,
-                        score INT NOT NULL
-                        game VARCHAR(50) NOT NULL
-                      )''')
-        
-        # Überprüfen, ob der Benutzer bereits einen Highscore hat
-        cur.execute('SELECT score FROM highscores WHERE username = %s', (username,))
-        result = cur.fetchone()
-        
-        if result:
-            if score > result[0]:
-                cur.execute('UPDATE highscores SET score = %s WHERE username = %s AND game = %s', (score, username, game))
-        else:
-            cur.execute('INSERT INTO highscores (username, score, game) VALUES (%s, %s, %s)', (username, score, game))
-        
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-    except Exception as e:
-        print(f"Fehler beim Speichern des Scores: {e}")  # Fehler-Log
+    # Einfügen des Highscores in die game_db-Tabelle
+    cur.execute(
+        'INSERT INTO game_db (username, score, game) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE score = GREATEST(score, VALUES(score))',
+        (username, score, game)
+    )
 
-    return get_highscores()
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return jsonify({'message': 'Score saved successfully'})
 
 
 @app.route('/get_highscores')

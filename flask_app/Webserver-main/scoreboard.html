@@ -41,12 +41,11 @@
             background-color: #FFD700;
             padding: 20px;
         }
-        header h1 {
+        header h1, header h2 {
             margin: 0;
             color: #2C2C2C;
         }
         header h2 {
-            color: #2C2C2C;
             margin-top: 10px;
         }
         main {
@@ -59,7 +58,7 @@
             padding: 40px;
             max-width: 800px;
             margin: 20px auto;
-            text-align: left;
+            text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             position: relative;
         }
@@ -76,13 +75,6 @@
         .box * {
             position: relative;
             z-index: 1;
-        }
-        iframe {
-            border: none;
-            width: 100%;
-            height: 400px;
-            margin-top: 20px;
-            border-radius: 10px;
         }
         .cta {
             display: inline-block;
@@ -123,7 +115,7 @@
 
     <main>
         <div class="box">
-            <h2>Catch the bug</h2>
+            <h2>Catch the Bug</h2>
             <div id="highscoreTable"></div>
         </div>
         <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
@@ -135,63 +127,39 @@
 
     <footer>
         <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
-        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
     </footer>
 
-
     <script>
-        const username = "{{ username }}";
-        let score = 0;
-        const gameArea = document.getElementById('gameArea');
-        const scoreBoard = document.getElementById('scoreBoard');
-        const highscoreTable = document.getElementById('highscoreTable');
-        const restartButton = document.getElementById('restartButton');
-        let gameInterval;
-        let difficultyInterval;
-        let gameTimeout;
-        let bugSpawnRate = 1000; // Start mit 1 Sekunde
-        let bugLifetime = 4000; // Lebensdauer der Bugs
-
         function updateAllHighscores(data) {
-    highscoreTable.innerHTML = '<h2>Highscores:</h2>';
+            const highscoreTable = document.getElementById('highscoreTable');
+            highscoreTable.innerHTML = '<h2>Highscores:</h2>';
 
-    for (const [game, scores] of Object.entries(data)) {
-        const gameDiv = document.createElement('div');
-        gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
+            for (const [game, scores] of Object.entries(data)) {
+                const gameDiv = document.createElement('div');
+                gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
 
-        scores.forEach(entry => {
-            const entryDiv = document.createElement('div');
-            entryDiv.innerText = `${entry.username}: ${entry.score}`;
-            gameDiv.appendChild(entryDiv);
-        });
+                scores.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.innerText = `${entry.username}: ${entry.score}`;
+                    gameDiv.appendChild(entryDiv);
+                });
 
-        highscoreTable.appendChild(gameDiv);
+                highscoreTable.appendChild(gameDiv);
+            }
         }
-    }
 
-    // Hilfsfunktion für schönere Spielnamen
-    function formatGameName(gameKey) {
-        const gameNames = {
-            'catch_the_bug': 'Catch the Bug',
-            'space_invader': 'Space Invader'
-            // Hier weitere Spiele einfügen
-        };
-        return gameNames[gameKey] || gameKey;
-    }
+        function formatGameName(gameKey) {
+            const gameNames = {
+                'catch_the_bug': 'Catch the Bug',
+                'space_invader': 'Space Invader'
+            };
+            return gameNames[gameKey] || gameKey;
+        }
 
-    // Abrufen aller Highscores beim Laden der Seite
-    fetch('/get_all_highscores')
-        .then(response => response.json())
-        .then(data => updateAllHighscores(data));
-
-
-    function endGame() {
-        clearInterval(gameInterval);
-        clearInterval(difficultyInterval);
-        clearTimeout(gameTimeout);
-        alert(`Spiel beendet! Dein Score: ${score}`);
-    }
-
+        fetch('/get_all_highscores')
+            .then(response => response.json())
+            .then(data => updateAllHighscores(data));
     </script>
 </body>
 </html>

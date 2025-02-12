@@ -104,25 +104,6 @@
             padding: 1em 0;
             font-size: 0.9em;
         }
-        #gameArea {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            background-color: #000;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .bug {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background-color: red;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        #scoreBoard, #highscoreTable {
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -130,6 +111,7 @@
         <a href="{{ url_for('welcome') }}">Home</a>
         <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
         <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('minigames') }}">Minigames</a>
         <a href="{{ url_for('memecoin') }}">Memecoin</a>
         <a href="{{ url_for('profile') }}">Profil</a>
     </nav>
@@ -148,12 +130,6 @@
             <h2>Community</h2>
             <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
             <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
-        </div>
-        <div class="box">
-            <h2>Minigame</h2>
-            <div id="gameArea"></div>
-            <div id="scoreBoard">Score: 0</div>
-            <div id="highscoreTable"></div>
         </div>
     </main>
 
@@ -179,54 +155,6 @@
             const randomIndex = Math.floor(Math.random() * sentences.length);
             document.getElementById("random-text").textContent = sentences[randomIndex];
         };
-
-        const username = "{{ username }}";
-        let score = 0;
-        const gameArea = document.getElementById('gameArea');
-        const scoreBoard = document.getElementById('scoreBoard');
-        const highscoreTable = document.getElementById('highscoreTable');
-
-        function createBug() {
-            const bug = document.createElement('div');
-            bug.classList.add('bug');
-            bug.style.top = Math.random() * (gameArea.clientHeight - 40) + 'px';
-            bug.style.left = Math.random() * (gameArea.clientWidth - 20) + 'px';
-
-            bug.addEventListener('click', () => {
-                score++;
-                scoreBoard.innerText = `Score: ${score}`;
-                bug.remove();
-                saveScore();
-            });
-
-            gameArea.appendChild(bug);
-            setTimeout(() => bug.remove(), 4000);
-        }
-
-        function saveScore() {
-            fetch('/save_score', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, score: score })
-            })
-            .then(response => response.json())
-            .then(data => updateHighscore(data));
-        }
-
-        function updateHighscore(data) {
-            highscoreTable.innerHTML = '<h3>Highscores:</h3>';
-            data.highscores.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.innerText = `${entry.username}: ${entry.score}`;
-                highscoreTable.appendChild(entryDiv);
-            });
-        }
-
-        fetch('/get_highscores')
-            .then(response => response.json())
-            .then(data => updateHighscore(data));
-
-        setInterval(createBug, 1000);
     </script>
 </body>
 </html>

@@ -130,8 +130,10 @@
         <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
     </footer>
 
+    # JavaScript Debugging zur Fehlerverfolgung
     <script>
         function updateAllHighscores(data) {
+            console.log('Empfangene Highscore-Daten:', data);
             const highscoreTable = document.getElementById('highscoreTable');
             highscoreTable.innerHTML = '<h2>Highscores:</h2>';
 
@@ -158,8 +160,14 @@
         }
 
         fetch('/get_all_highscores')
-            .then(response => response.json())
-            .then(data => updateAllHighscores(data));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok');
+                }
+                return response.json();
+            })
+            .then(data => updateAllHighscores(data))
+            .catch(error => console.error('Fehler beim Abrufen der Highscores:', error));
     </script>
 </body>
 </html>

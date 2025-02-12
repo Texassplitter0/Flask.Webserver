@@ -491,7 +491,7 @@ def get_highscores():
     return jsonify({'highscores': highscores})
 
 
-@app.route('/remove_background/helldivers-bug.png')
+@app.route('/remove_background/helldivers-bug.webp')
 def remove_background(filename):
     image_path = os.path.join(app.static_folder, filename)
     image = Image.open(image_path).convert("RGBA")

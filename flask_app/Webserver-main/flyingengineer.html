@@ -1,154 +1,237 @@
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreBoard = document.getElementById('scoreBoard');
-    const timerDisplay = document.getElementById('timer');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    const finalScoreText = document.getElementById('finalScore');
-    const finalTimeText = document.getElementById('finalTime');
-    const restartButton = document.getElementById('restartButton');
-
-    let spaceship = {
-        x: canvas.width / 2 - 25,
-        y: canvas.height - 70,
-        width: 50,
-        height: 50,
-        speed: 5,
-        movingLeft: false,
-        movingRight: false
-    };
-
-    let asteroids = [];
-    let score = 0;
-    let gameRunning = true;
-    let startTime, elapsedTime = 0;
-
-    function drawSpaceship() {
-        const img = new Image();
-        img.src = 'images/spaceship.png';
-        ctx.drawImage(img, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
-    }
-
-    function drawAsteroids() {
-        ctx.fillStyle = 'gray';
-        asteroids.forEach(asteroid => {
-            ctx.beginPath();
-            ctx.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2);
-            ctx.fill();
-        });
-    }
-
-    function moveSpaceship() {
-        if (spaceship.movingLeft && spaceship.x > 0) {
-            spaceship.x -= spaceship.speed;
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flying Engineer</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            text-align: center;
         }
-        if (spaceship.movingRight && spaceship.x + spaceship.width < canvas.width) {
-            spaceship.x += spaceship.speed;
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background-image: url('images/space-background.jpg');
+            background-size: cover;
+            border: 2px solid #FFD700;
         }
-    }
 
-    function updateAsteroids() {
-        asteroids.forEach(asteroid => {
-            asteroid.y += asteroid.speed;
-        });
-        asteroids = asteroids.filter(asteroid => asteroid.y < canvas.height);
-    }
+        #scoreBoard, #timer {
+            position: absolute;
+            top: 10px;
+            color: #FFD700;
+            font-size: 24px;
+        }
 
-    function detectCollision() {
-        for (let asteroid of asteroids) {
-            if (
-                spaceship.x < asteroid.x + asteroid.radius &&
-                spaceship.x + spaceship.width > asteroid.x - asteroid.radius &&
-                spaceship.y < asteroid.y + asteroid.radius &&
-                spaceship.y + spaceship.height > asteroid.y - asteroid.radius
-            ) {
-                gameOver();
+        #scoreBoard {
+            left: 10px;
+        }
+
+        #timer {
+            right: 10px;
+        }
+
+        #gameOverScreen {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        #restartButton {
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #restartButton:hover {
+            background-color: #ffb700;
+        }
+    </style>
+</head>
+<body>
+    <div id="scoreBoard">Score: 0</div>
+    <div id="timer">Zeit: 0s</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="gameOverScreen">
+        <h1>Game Over</h1>
+        <p id="finalScore"></p>
+        <p id="finalTime"></p>
+        <button id="restartButton">Neustart</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreBoard = document.getElementById('scoreBoard');
+            const timerDisplay = document.getElementById('timer');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            const finalScoreText = document.getElementById('finalScore');
+            const finalTimeText = document.getElementById('finalTime');
+            const restartButton = document.getElementById('restartButton');
+    
+            let spaceship = {
+                x: canvas.width / 2 - 25,
+                y: canvas.height - 70,
+                width: 50,
+                height: 50,
+                speed: 5,
+                movingLeft: false,
+                movingRight: false
+            };
+    
+            let asteroids = [];
+            let score = 0;
+            let gameRunning = true;
+            let startTime, elapsedTime = 0;
+    
+            function drawSpaceship() {
+                const img = new Image();
+                img.src = 'images/spaceship.png';
+                ctx.drawImage(img, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
-        }
-    }
-
-    function gameOver() {
-        gameRunning = false;
-        clearInterval(timerInterval);
-        gameOverScreen.style.display = 'block';
-        finalScoreText.innerText = `Dein Score: ${score}`;
-        finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
-        saveScore();
-    }
-
-    function spawnAsteroid() {
-        const x = Math.random() * (canvas.width - 20) + 10;
-        const radius = Math.random() * 20 + 10;
-        const speed = Math.random() * 3 + 2;
-        asteroids.push({ x, y: -radius, radius, speed });
-    }
-
-    function updateScore() {
-        score++;
-        scoreBoard.innerText = `Score: ${score}`;
-    }
-
-    function updateTimer() {
-        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
-    }
-
-    function saveScore() {
-        fetch('/save_score', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ score: score, game: 'flying_engineer' })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Score erfolgreich gespeichert:', data);
-        })
-        .catch(error => console.error('Fehler beim Speichern des Scores:', error));
-    }
-
-    function gameLoop() {
-        if (!gameRunning) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawSpaceship();
-        drawAsteroids();
-        moveSpaceship();
-        updateAsteroids();
-        detectCollision();
-        updateScore();
-        requestAnimationFrame(gameLoop);
-    }
-
-    let timerInterval;
-
-    function startGame() {
-        spaceship.x = canvas.width / 2 - 25;
-        spaceship.y = canvas.height - 70;
-        asteroids = [];
-        score = 0;
-        elapsedTime = 0;
-        startTime = Date.now();
-        timerDisplay.innerText = `Zeit: 0s`;
-        scoreBoard.innerText = `Score: 0`;
-        gameRunning = true;
-        gameOverScreen.style.display = 'none';
-
-        timerInterval = setInterval(updateTimer, 1000);
-        gameLoop();
-    }
-
-    setInterval(spawnAsteroid, 1000);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
-        if (e.key === 'ArrowRight') spaceship.movingRight = true;
-    });
-
-    document.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
-        if (e.key === 'ArrowRight') spaceship.movingRight = false;
-    });
-
-    restartButton.addEventListener('click', startGame);
-
-    startGame();
-</script>
+    
+            function drawAsteroids() {
+                ctx.fillStyle = 'gray';
+                asteroids.forEach(asteroid => {
+                    ctx.beginPath();
+                    ctx.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+    
+            function moveSpaceship() {
+                if (spaceship.movingLeft && spaceship.x > 0) {
+                    spaceship.x -= spaceship.speed;
+                }
+                if (spaceship.movingRight && spaceship.x + spaceship.width < canvas.width) {
+                    spaceship.x += spaceship.speed;
+                }
+            }
+    
+            function updateAsteroids() {
+                asteroids.forEach(asteroid => {
+                    asteroid.y += asteroid.speed;
+                });
+                asteroids = asteroids.filter(asteroid => asteroid.y < canvas.height);
+            }
+    
+            function detectCollision() {
+                for (let asteroid of asteroids) {
+                    if (
+                        spaceship.x < asteroid.x + asteroid.radius &&
+                        spaceship.x + spaceship.width > asteroid.x - asteroid.radius &&
+                        spaceship.y < asteroid.y + asteroid.radius &&
+                        spaceship.y + spaceship.height > asteroid.y - asteroid.radius
+                    ) {
+                        gameOver();
+                    }
+                }
+            }
+    
+            function gameOver() {
+                gameRunning = false;
+                clearInterval(timerInterval);
+                gameOverScreen.style.display = 'block';
+                finalScoreText.innerText = `Dein Score: ${score}`;
+                finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
+                saveScore();
+            }
+    
+            function spawnAsteroid() {
+                const x = Math.random() * (canvas.width - 20) + 10;
+                const radius = Math.random() * 20 + 10;
+                const speed = Math.random() * 3 + 2;
+                asteroids.push({ x, y: -radius, radius, speed });
+            }
+    
+            function updateScore() {
+                score++;
+                scoreBoard.innerText = `Score: ${score}`;
+            }
+    
+            function updateTimer() {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
+            }
+    
+            function saveScore() {
+                fetch('/save_score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: score, game: 'flying_engineer' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Score erfolgreich gespeichert:', data);
+                })
+                .catch(error => console.error('Fehler beim Speichern des Scores:', error));
+            }
+    
+            function gameLoop() {
+                if (!gameRunning) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawSpaceship();
+                drawAsteroids();
+                moveSpaceship();
+                updateAsteroids();
+                detectCollision();
+                updateScore();
+                requestAnimationFrame(gameLoop);
+            }
+    
+            let timerInterval;
+    
+            function startGame() {
+                spaceship.x = canvas.width / 2 - 25;
+                spaceship.y = canvas.height - 70;
+                asteroids = [];
+                score = 0;
+                elapsedTime = 0;
+                startTime = Date.now();
+                timerDisplay.innerText = `Zeit: 0s`;
+                scoreBoard.innerText = `Score: 0`;
+                gameRunning = true;
+                gameOverScreen.style.display = 'none';
+    
+                timerInterval = setInterval(updateTimer, 1000);
+                gameLoop();
+            }
+    
+            setInterval(spawnAsteroid, 1000);
+    
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
+                if (e.key === 'ArrowRight') spaceship.movingRight = true;
+            });
+    
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
+                if (e.key === 'ArrowRight') spaceship.movingRight = false;
+            });
+    
+            restartButton.addEventListener('click', startGame);
+    
+            startGame();
+        });
+    </script>
+    
+</body>
+</html>

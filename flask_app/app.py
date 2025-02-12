@@ -465,15 +465,18 @@ def edit_user(user_id):
 
 @app.route('/save_score', methods=['POST'])
 def save_score():
+    if 'user' not in session:
+        return jsonify({'error': 'Benutzer nicht eingeloggt'}), 403
+
     data = request.get_json()
-    username = data['username']
+    username = session['user']  # Benutzername aus der Session abrufen
     score = data['score']
-    game = data.get('game', 'catch_the_bug')  # Standardwert 'catch_the_bug'
-    
+    game = data.get('game', 'catch_the_bug')  # Standardspielname
+
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Einfügen des Highscores in die game_db-Tabelle
+    # Speichere den Score in der Datenbank
     cur.execute(
         'INSERT INTO game_db (username, score, game) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE score = GREATEST(score, VALUES(score))',
         (username, score, game)
@@ -483,7 +486,7 @@ def save_score():
     cur.close()
     conn.close()
     
-    return jsonify({'message': 'Score saved successfully'})
+    return jsonify({'message': 'Score erfolgreich gespeichert'})
 
 
 @app.route('/get_highscores')

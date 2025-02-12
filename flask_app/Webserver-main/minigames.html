@@ -200,11 +200,12 @@
             fetch('/save_score', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, score })
+                body: JSON.stringify({ username: username, score: score, game: 'catch_the_bug' }) // Spielname angeben
             })
             .then(response => response.json())
-            .then(data => updateHighscore(data));
+            .then(data => updateAllHighscores(data));
         }
+
 
         function updateAllHighscores(data) {
             const highscoreTable = document.getElementById('highscoreTable');

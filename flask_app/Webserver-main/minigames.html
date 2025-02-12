@@ -31,7 +31,6 @@
             text-decoration: none;
             padding: 10px 20px;
             font-weight: bold;
-            display: inline-block;
         }
         nav a:hover {
             background-color: #444;
@@ -41,12 +40,11 @@
             background-color: #FFD700;
             padding: 20px;
         }
-        header h1 {
+        header h1, header h2 {
             margin: 0;
             color: #2C2C2C;
         }
         header h2 {
-            color: #2C2C2C;
             margin-top: 10px;
         }
         main {
@@ -59,7 +57,7 @@
             padding: 40px;
             max-width: 800px;
             margin: 20px auto;
-            text-align: left;
+            text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             position: relative;
         }
@@ -77,14 +75,7 @@
             position: relative;
             z-index: 1;
         }
-        iframe {
-            border: none;
-            width: 100%;
-            height: 400px;
-            margin-top: 20px;
-            border-radius: 10px;
-        }
-        .cta {
+        .cta, #restartButton {
             display: inline-block;
             text-decoration: none;
             padding: 10px 20px;
@@ -92,9 +83,10 @@
             color: #333;
             border-radius: 5px;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 20px;
+            cursor: pointer;
         }
-        .cta:hover {
+        .cta:hover, #restartButton:hover {
             background-color: #ffb700;
         }
         footer {
@@ -109,35 +101,24 @@
             width: 100%;
             height: 300px;
             background-image: url('images/bg-catchthebug.webp');
+            background-size: cover;
+            background-position: center;
             border-radius: 10px;
             overflow: hidden;
         }
         .bug {
             position: absolute;
-            width: 40px; /* Du kannst das anpassen, falls es größer sein soll */
+            width: 40px;
             height: 40px;
             background-image: url('images/helldivers-bug.webp');
             background-size: cover;
             background-position: center;
             cursor: pointer;
-            border-radius: 0; /* Entferne die Rundung, wenn das Bild nicht rund sein soll */
         }
         #scoreBoard, #highscoreTable {
             margin-top: 10px;
-        }
-        #restartButton {
-            display: inline-block;
-            text-decoration: none;
-            padding: 10px 20px;
-            background-color: #FFD700;
-            color: #333;
-            border-radius: 5px;
+            color: #FFD700;
             font-weight: bold;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        #restartButton:hover {
-            background-color: #ffb700;
         }
     </style>
 </head>
@@ -152,16 +133,16 @@
 
     <header>
         <h1>Minigames</h1>
-        <h2>Für alle die einfach nur langeweile haben</h2>
+        <h2>Für alle die einfach nur Langeweile haben</h2>
     </header>
 
     <main>
         <div class="box">
             <h2>Scoreboards</h2>
-            <a href="{{ url_for('scoreboard') }}">Show Me!</a>
+            <a href="{{ url_for('scoreboard') }}" class="cta">Show Me!</a>
         </div>
         <div class="box">
-            <h2>Catch the bug</h2>
+            <h2>Catch the Bug</h2>
             <div id="gameArea"></div>
             <div id="scoreBoard">Score: 0</div>
             <button id="restartButton">Neustart</button>
@@ -175,30 +156,24 @@
 
     <footer>
         <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
-        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits Existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
     </footer>
 
-
     <script>
-
-        // CATCH THE BUG
         const username = "{{ username }}";
         let score = 0;
         const gameArea = document.getElementById('gameArea');
         const scoreBoard = document.getElementById('scoreBoard');
-        const highscoreTable = document.getElementById('highscoreTable');
         const restartButton = document.getElementById('restartButton');
-        let gameInterval;
-        let difficultyInterval;
-        let gameTimeout;
-        let bugSpawnRate = 1000; // Start mit 1 Sekunde
-        let bugLifetime = 4000; // Lebensdauer der Bugs
+        let gameInterval, difficultyInterval, gameTimeout;
+        let bugSpawnRate = 1000;
+        let bugLifetime = 4000;
 
         function createBug() {
             const bug = document.createElement('div');
             bug.classList.add('bug');
             bug.style.top = Math.random() * (gameArea.clientHeight - 40) + 'px';
-            bug.style.left = Math.random() * (gameArea.clientWidth - 20) + 'px';
+            bug.style.left = Math.random() * (gameArea.clientWidth - 40) + 'px';
 
             bug.addEventListener('click', () => {
                 score++;
@@ -214,7 +189,7 @@
         function adjustDifficulty() {
             if (bugSpawnRate > 200) {
                 bugSpawnRate -= 100;
-                bugLifetime = Math.max(1000, bugLifetime - 300); // Reduziert Lebensdauer der Bugs
+                bugLifetime = Math.max(1000, bugLifetime - 300);
                 clearInterval(gameInterval);
                 gameInterval = setInterval(createBug, bugSpawnRate);
             }
@@ -224,13 +199,14 @@
             fetch('/save_score', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, score: score })
+                body: JSON.stringify({ username, score })
             })
             .then(response => response.json())
             .then(data => updateHighscore(data));
         }
 
         function updateHighscore(data) {
+            const highscoreTable = document.getElementById('highscoreTable');
             highscoreTable.innerHTML = '<h3>Highscores:</h3>';
             data.highscores.forEach(entry => {
                 const entryDiv = document.createElement('div');
@@ -255,14 +231,9 @@
             gameInterval = setInterval(createBug, bugSpawnRate);
             difficultyInterval = setInterval(adjustDifficulty, 5000);
             gameTimeout = setTimeout(endGame, 60000);
-            fetch('/get_highscores')
-                .then(response => response.json())
-                .then(data => updateHighscore(data));
         }
 
         restartButton.addEventListener('click', startGame);
-
-        
     </script>
 </body>
 </html>

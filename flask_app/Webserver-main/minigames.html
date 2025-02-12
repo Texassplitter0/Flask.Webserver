@@ -167,6 +167,8 @@
         const gameArea = document.getElementById('gameArea');
         const scoreBoard = document.getElementById('scoreBoard');
         const highscoreTable = document.getElementById('highscoreTable');
+        let gameInterval;
+        let bugSpawnRate = 1000; // Start mit 1 Sekunde
 
         function createBug() {
             const bug = document.createElement('div');
@@ -183,6 +185,14 @@
 
             gameArea.appendChild(bug);
             setTimeout(() => bug.remove(), 4000);
+        }
+
+        function adjustDifficulty() {
+            if (bugSpawnRate > 200) { // Mindestabstand 200ms
+                bugSpawnRate -= 100; // Erhöht die Geschwindigkeit alle 5 Sekunden
+                clearInterval(gameInterval);
+                gameInterval = setInterval(createBug, bugSpawnRate);
+            }
         }
 
         function saveScore() {
@@ -204,11 +214,18 @@
             });
         }
 
+        function endGame() {
+            clearInterval(gameInterval);
+            alert(`Spiel beendet! Dein Score: ${score}`);
+        }
+
         fetch('/get_highscores')
             .then(response => response.json())
             .then(data => updateHighscore(data));
 
-        setInterval(createBug, 1000);
+        gameInterval = setInterval(createBug, bugSpawnRate);
+        setInterval(adjustDifficulty, 5000); // Erhöht die Schwierigkeit alle 5 Sekunden
+        setTimeout(endGame, 60000);
     </script>
 </body>
 </html>

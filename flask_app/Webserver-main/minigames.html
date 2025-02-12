@@ -157,11 +157,14 @@
 
     <main>
         <div class="box">
+            <h2>Scoreboards</h2>
+            <a href="{{ url_for('scoreboard') }}">Show Me!</a>
+        </div>
+        <div class="box">
             <h2>Catch the bug</h2>
             <div id="gameArea"></div>
             <div id="scoreBoard">Score: 0</div>
             <button id="restartButton">Neustart</button>
-            <div id="highscoreTable"></div>
         </div>
         <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
             <h2>Community</h2>
@@ -177,6 +180,8 @@
 
 
     <script>
+
+        // CATCH THE BUG
         const username = "{{ username }}";
         let score = 0;
         const gameArea = document.getElementById('gameArea');
@@ -256,6 +261,8 @@
         }
 
         restartButton.addEventListener('click', startGame);
+
+        
     </script>
 </body>
 </html>

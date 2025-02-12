@@ -468,6 +468,7 @@ def save_score():
     data = request.get_json()
     username = data['username']
     score = data['score']
+    game = data.get('game', 'catch_the_bug')  # Standardwert 'catch_the_bug'
 
     try:
         conn = get_db_connection()
@@ -478,6 +479,7 @@ def save_score():
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         username VARCHAR(255) NOT NULL,
                         score INT NOT NULL
+                        game VARCHAR(50) NOT NULL
                       )''')
         
         # Überprüfen, ob der Benutzer bereits einen Highscore hat
@@ -486,9 +488,9 @@ def save_score():
         
         if result:
             if score > result[0]:
-                cur.execute('UPDATE highscores SET score = %s WHERE username = %s', (score, username))
+                cur.execute('UPDATE highscores SET score = %s WHERE username = %s AND game = %s', (score, username, game))
         else:
-            cur.execute('INSERT INTO highscores (username, score) VALUES (%s, %s)', (username, score))
+            cur.execute('INSERT INTO highscores (username, score, game) VALUES (%s, %s, %s)', (username, score, game))
         
         conn.commit()
         cur.close()
@@ -517,13 +519,14 @@ def get_all_highscores():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
 
+    # Abrufen aller Highscores, gruppiert nach Spiel
     cur.execute('SELECT username, score, game FROM highscores ORDER BY game, score DESC')
     highscores = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    # Gruppiere nach Spiel
+    # Gruppiere Highscores nach Spiel
     grouped_highscores = {}
     for entry in highscores:
         game = entry['game']
@@ -532,6 +535,7 @@ def get_all_highscores():
         grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
 
     return jsonify(grouped_highscores)
+
 
 
 @app.route('/remove_background/helldivers-bug.webp')

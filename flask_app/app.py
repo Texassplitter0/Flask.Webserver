@@ -519,8 +519,11 @@ def get_all_highscores():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
     
+    # Sicherstellen, dass die Spalte 'game' existiert
+    cur.execute('ALTER TABLE game_db ADD COLUMN IF NOT EXISTS game VARCHAR(50) DEFAULT "catch_the_bug"')
+
     # Abfrage der Highscores inkl. Spielnamen aus der Datenbank
-    cur.execute('SELECT game, username, score FROM highscores ORDER BY game, score DESC')
+    cur.execute('SELECT game, username, score FROM game_db ORDER BY game, score DESC')
     highscores = cur.fetchall()
 
     cur.close()
@@ -537,7 +540,6 @@ def get_all_highscores():
     # Rueckgabe der Highscores als JSON
     return jsonify(grouped_highscores)
 
-# Hinzufügen von Debugging für die Fehlersuche
 @app.after_request
 def add_header(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"

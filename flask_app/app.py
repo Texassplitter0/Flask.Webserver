@@ -251,6 +251,13 @@ def welcome():
     return redirect(url_for('index'))
 
 
+@app.route('/minigames')
+def minigames():
+    if session.get('logged_in'):
+        return render_template('minigames.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
 # <------------------------------------------Restliche-Routes------------------------------------------------------------>
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -482,6 +489,26 @@ def get_highscores():
     conn.close()
 
     return jsonify({'highscores': highscores})
+
+
+@app.route('/remove_background/helldivers-bug.png')
+def remove_background(filename):
+    image_path = os.path.join(app.static_folder, filename)
+    image = Image.open(image_path).convert("RGBA")
+
+    datas = image.getdata()
+    new_data = []
+    for item in datas:
+        if item[0] > 200 and item[1] > 200 and item[2] > 200:
+            new_data.append((255, 255, 255, 0))
+        else:
+            new_data.append(item)
+
+    image.putdata(new_data)
+    transparent_image_path = os.path.join(app.static_folder, f"transparent_{filename}")
+    image.save(transparent_image_path)
+
+    return send_from_directory(app.static_folder, f"transparent_{filename}")
 
 
 if __name__ == '__main__':

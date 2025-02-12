@@ -161,113 +161,112 @@
     </footer>
 
     <script>
-    const username = "{{ user.username }}";
-    let score = 0;
-    const gameArea = document.getElementById('gameArea');
-    const scoreBoard = document.getElementById('scoreBoard');
-    const restartButton = document.getElementById('restartButton');
-    let gameInterval, difficultyInterval, gameTimeout;
-    let bugSpawnRate = 1000;
-    let bugLifetime = 4000;
+        const username = "{{ user.username }}";
+        let score = 0;
+        const gameArea = document.getElementById('gameArea');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const restartButton = document.getElementById('restartButton');
+        let gameInterval, difficultyInterval, gameTimeout;
+        let bugSpawnRate = 1000;
+        let bugLifetime = 4000;
+    
+        function saveScore() {
+            fetch('/save_score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ score: score, game: 'catch_the_bug' })  // Username wird nicht mehr gesendet
+            })
+            .then(response => response.json())
+            .then(data => {
+               console.log('Score erfolgreich gespeichert:', data);
+               fetch('/get_all_highscores')
+                   .then(response => response.json())
+                   .then(data => updateAllHighscores(data));
+            })
+            .catch(error => console.error('Fehler beim Speichern des Scores:', error));
+        }
+    
+        function adjustDifficulty() {
+            if (bugSpawnRate > 200) {
+                bugSpawnRate -= 100;
+                bugLifetime = Math.max(1000, bugLifetime - 300);
+                clearInterval(gameInterval);
+                gameInterval = setInterval(createBug, bugSpawnRate);
+            }
+        }
+    
+        function saveScore() {
+            fetch('/save_score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, score: score, game: 'catch_the_bug' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Score erfolgreich gespeichert:', data);
+                // Nach dem Speichern die Highscores erneut abrufen
+                fetch('/get_all_highscores')
+                    .then(response => response.json())
+                    .then(data => updateAllHighscores(data));
+            })
+            .catch(error => console.error('Fehler beim Speichern des Scores:', error));
+        }
+    
+        function updateAllHighscores(data) {
+            const highscoreTable = document.getElementById('highscoreTable');
+            if (!highscoreTable) {
+                console.warn('Highscore-Element nicht gefunden.');
+                return;
+            }
 
-    function createBug() {
-        const bug = document.createElement('div');
-        bug.classList.add('bug');
-        bug.style.top = Math.random() * (gameArea.clientHeight - 40) + 'px';
-        bug.style.left = Math.random() * (gameArea.clientWidth - 40) + 'px';
+            highscoreTable.innerHTML = '<h2>Highscores:</h2>';
 
-        bug.addEventListener('click', () => {
-            score++;
-            scoreBoard.innerText = `Score: ${score}`;
-            bug.remove();
-            saveScore();
-        });
+            for (const [game, scores] of Object.entries(data)) {
+                const gameDiv = document.createElement('div');
+                gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
 
-        gameArea.appendChild(bug);
-        setTimeout(() => bug.remove(), bugLifetime);
-    }
+                scores.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.innerText = `${entry.username}: ${entry.score}`;
+                    gameDiv.appendChild(entryDiv);
+                });
 
-    function adjustDifficulty() {
-        if (bugSpawnRate > 200) {
-            bugSpawnRate -= 100;
-            bugLifetime = Math.max(1000, bugLifetime - 300);
+                highscoreTable.appendChild(gameDiv);
+            }
+        }
+    
+        function formatGameName(gameKey) {
+            const gameNames = {
+                'catch_the_bug': 'Catch the Bug',
+                'space_invader': 'Space Invader'
+            };
+            return gameNames[gameKey] || gameKey;
+        }
+    
+        fetch('/get_all_highscores')
+            .then(response => response.json())
+            .then(data => updateAllHighscores(data));
+    
+        function endGame() {
             clearInterval(gameInterval);
+            clearInterval(difficultyInterval);
+            clearTimeout(gameTimeout);
+            alert(`Spiel beendet! Dein Score: ${score}`);
+        }
+    
+        function startGame() {
+            score = 0;
+            bugSpawnRate = 1000;
+            bugLifetime = 4000;
+            scoreBoard.innerText = `Score: ${score}`;
+            gameArea.innerHTML = '';
             gameInterval = setInterval(createBug, bugSpawnRate);
+            difficultyInterval = setInterval(adjustDifficulty, 5000);
+            gameTimeout = setTimeout(endGame, 60000);
         }
-    }
-
-    function saveScore() {
-        fetch('/save_score', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username, score: score, game: 'catch_the_bug' })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Score erfolgreich gespeichert:', data);
-            // Nach dem Speichern die Highscores erneut abrufen
-            fetch('/get_all_highscores')
-                .then(response => response.json())
-                .then(data => updateAllHighscores(data));
-        })
-        .catch(error => console.error('Fehler beim Speichern des Scores:', error));
-    }
-
-    function updateAllHighscores(data) {
-        const highscoreTable = document.getElementById('highscoreTable');
-        if (!highscoreTable) {
-            console.warn('Highscore-Element nicht gefunden.');
-            return;
-        }
-
-        highscoreTable.innerHTML = '<h2>Highscores:</h2>';
-
-        for (const [game, scores] of Object.entries(data)) {
-            const gameDiv = document.createElement('div');
-            gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
-
-            scores.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.innerText = `${entry.username}: ${entry.score}`;
-                gameDiv.appendChild(entryDiv);
-            });
-
-            highscoreTable.appendChild(gameDiv);
-        }
-    }
-
-    function formatGameName(gameKey) {
-        const gameNames = {
-            'catch_the_bug': 'Catch the Bug',
-            'space_invader': 'Space Invader'
-        };
-        return gameNames[gameKey] || gameKey;
-    }
-
-    fetch('/get_all_highscores')
-        .then(response => response.json())
-        .then(data => updateAllHighscores(data));
-
-    function endGame() {
-        clearInterval(gameInterval);
-        clearInterval(difficultyInterval);
-        clearTimeout(gameTimeout);
-        alert(`Spiel beendet! Dein Score: ${score}`);
-    }
-
-    function startGame() {
-        score = 0;
-        bugSpawnRate = 1000;
-        bugLifetime = 4000;
-        scoreBoard.innerText = `Score: ${score}`;
-        gameArea.innerHTML = '';
-        gameInterval = setInterval(createBug, bugSpawnRate);
-        difficultyInterval = setInterval(adjustDifficulty, 5000);
-        gameTimeout = setTimeout(endGame, 60000);
-    }
-
-    restartButton.addEventListener('click', startGame);
-</script>
-
+    
+        restartButton.addEventListener('click', startGame);
+    </script>
+    
 </body>
 </html>

@@ -258,6 +258,13 @@ def minigames():
     return redirect(url_for('index'))
 
 
+@app.route('/scoreboard')
+def scoreboard():
+    if session.get('logged_in'):
+        return render_template('scoreboard.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
+
 # <------------------------------------------Restliche-Routes------------------------------------------------------------>
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -503,6 +510,28 @@ def get_highscores():
     conn.close()
 
     return jsonify({'highscores': highscores})
+
+
+@app.route('/get_all_highscores')
+def get_all_highscores():
+    conn = get_db_connection()
+    cur = conn.cursor(dictionary=True)
+
+    cur.execute('SELECT username, score, game FROM highscores ORDER BY game, score DESC')
+    highscores = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    # Gruppiere nach Spiel
+    grouped_highscores = {}
+    for entry in highscores:
+        game = entry['game']
+        if game not in grouped_highscores:
+            grouped_highscores[game] = []
+        grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
+
+    return jsonify(grouped_highscores)
 
 
 @app.route('/remove_background/helldivers-bug.webp')

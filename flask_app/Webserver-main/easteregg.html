@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easteregg</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            text-align: center;
+            background-image: url('images/BG-DönerHub-Siegel.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+        header {
+            background-color: #FFD700;
+            padding: 20px;
+        }
+        header h1, header h2 {
+            margin: 0;
+            color: #2C2C2C;
+        }
+        header h2 {
+            margin-top: 10px;
+        }
+        main {
+            padding: 20px;
+        }
+        .box {
+            background-color: #333;
+            color: #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        .box * {
+            position: relative;
+            z-index: 1;
+        }
+        .cta {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #333;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .cta:hover {
+            background-color: #ffb700;
+        }
+        footer {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('welcome') }}">Home</a>
+        <a href="{{ url_for('minecraft') }}">Minecraft Server</a>
+        <a href="{{ url_for('gamedivers') }}">GameDivers</a>
+        <a href="{{ url_for('minigames') }}">Minigames</a>
+        <a href="{{ url_for('memecoin') }}">Memecoin</a>
+        <a href="{{ url_for('profile') }}">Profil</a>
+    </nav>
+
+    <header>
+        <h1>Easteregg</h1>
+        <h2>YOU FOUND AN EASTEREGG</h2>
+        <h2>CONGRATULATION!</h2>
+    </header>
+
+    <main>
+        <div class="box" style="background-image: url('images/easteregg.webp');">
+            <h2>Easteregg</h2>
+        </div>
+        <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
+            <h2>Community</h2>
+            <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
+            <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DönerHub.de/Gamedivers.de | <a href="{{ url_for('datenschutz') }}" style="color: #ccc;">Datenschutz</a> | <a href="{{ url_for('impressum') }}" style="color: #ccc;">Impressum</a></p>
+        <p>Disclaimer: Diese Seite ist rein für Hobby, Privat oder Satire zwecke. Ähnlichkeiten zu bereits existierenden Websites, Personen oder Projekten, sind rein zufällig.</p>
+    </footer>
+</body>
+</html>

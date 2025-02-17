@@ -7,6 +7,9 @@ app = Flask(__name__, static_folder="/app/flask_app/Webserver-main/images", temp
 app.secret_key = 'your_secret_key'
 
 
+# <---------------------------------------------------------DATENBANK---------------------------------------------------------------------->
+
+
 def get_db_connection(use_root=False):
     return mysql.connector.connect(
         host=os.getenv('MYSQL_HOST', 'db'),
@@ -103,6 +106,10 @@ def initialize_database():
 
 from flask import send_from_directory
 
+
+# <-------------------------------------------------------APP.ROUTEs--------------------------------------------------------------------->
+
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory('flask_app/Webserver-main/static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -113,7 +120,9 @@ def index():
     return render_template('index.html')
 
 
-# <------------------------------------------Routes-für-HTML-Dateien-setzen------------------------------------------------------------>
+# <--------------------------------------------Routes-für-HTML-Dateien-setzen------------------------------------------------------------>
+
+
 @app.route('/adminpanel')
 def adminpanel():
     if session.get('logged_in') and session.get('role') == 'admin':
@@ -123,7 +132,7 @@ def adminpanel():
         cursor.execute("SELECT id, username FROM registration_requests")
         registration_requests = cursor.fetchall()
 
-        cursor.execute("SELECT id, username, role FROM users")
+        cursor.execute("SELECT id, username, email, role, notes FROM users")
         users = cursor.fetchall()
 
         cursor.close()
@@ -272,7 +281,9 @@ def flyingengineer():
     return redirect(url_for('index'))
 
 
-# <------------------------------------------Restliche-Routes------------------------------------------------------------>
+# <---------------------------------------Routes-für-Login/Logout-und-Registrierung--------------------------------------------------------->
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None  # Standardmäßig keine Fehlermeldung
@@ -332,6 +343,15 @@ def register():
     return render_template('registration.html', error=error, success=success)
 
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+
+# <-------------------------------------------------Routes-für-Adminfunktionen----------------------------------------------------->
+
+
 @app.route('/admin_approve/<int:request_id>')
 def admin_approve(request_id):
     if 'role' in session and session['role'] == 'admin':
@@ -367,12 +387,6 @@ def admin_reject(request_id):
     return redirect(url_for('adminpanel'))
 
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if session.get('logged_in') and session.get('role') == 'admin':
@@ -402,6 +416,9 @@ def admin():
         return render_template('admin.html', users=users)
 
     return redirect(url_for('index'))
+
+
+# <------------------------------------------------Routes-für-User-aktionen------------------------------------------------------------->
 
 
 @app.route('/delete_account', methods=['POST'])
@@ -468,6 +485,9 @@ def edit_user(user_id):
         return render_template('edit_user.html', user=user)
     
     return redirect(url_for('index'))
+
+
+# <----------------------------------------------------Routes-für-Minigames----------------------------------------------------------->
 
 
 @app.route('/save_score', methods=['POST'])

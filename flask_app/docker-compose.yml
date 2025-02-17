@@ -25,7 +25,7 @@ services:
       - "traefik.http.routers.game.tls.certresolver=cloudflare"
       - "traefik.http.routers.game.tls.domains[2].main=gamediver.de"
       - "traefik.http.routers.game.service=gameService"
-      - "traefik.http.services.gameService.loadBalancer.server.port=10100"
+      - "traefik.http.services.gameService.loadBalancer.server.port=5000"
 
   db:
     image: mysql:8.0.34

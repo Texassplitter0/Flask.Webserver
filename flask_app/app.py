@@ -281,6 +281,12 @@ def flyingengineer():
     return redirect(url_for('index'))
 
 
+@app.route('/easteregg')
+def easteregg():
+    if session.get('logged_in'):
+        return render_template('easteregg.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
 # <---------------------------------------Routes-für-Login/Logout-und-Registrierung--------------------------------------------------------->
 
 

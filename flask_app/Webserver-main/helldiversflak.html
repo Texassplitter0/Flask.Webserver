@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helldivers Centipede</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background-image: url('images/helldivers-space.jpg');
+            background-size: cover;
+            border: 2px solid #FFD700;
+        }
+
+        #scoreBoard {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #FFD700;
+            font-size: 24px;
+        }
+
+        #gameOverScreen {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        #restartButton, #backButton {
+            padding: 10px 20px;
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        #restartButton:hover, #backButton:hover {
+            background-color: #ffb700;
+        }
+    </style>
+</head>
+<body>
+    <div id="scoreBoard">Score: 0</div>
+    <canvas id="gameCanvas" width="800" height="800"></canvas>
+
+    <div id="gameOverScreen">
+        <h1>Game Over</h1>
+        <p id="finalScore"></p>
+        <button id="restartButton">Neustart</button>
+        <button id="backButton" onclick="window.location.href='{{ url_for('minigames') }}'">Zurück zu den Minigames</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreBoard = document.getElementById('scoreBoard');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            const finalScoreText = document.getElementById('finalScore');
+            const restartButton = document.getElementById('restartButton');
+
+            let player = { x: canvas.width / 2 - 15, y: canvas.height - 50, width: 30, height: 30, speed: 5, movingLeft: false, movingRight: false };
+            let bullets = [];
+            let centipede = [];
+            let score = 0;
+            let gameRunning = true;
+
+            function drawPlayer() { ctx.fillStyle = '#FFD700'; ctx.fillRect(player.x, player.y, player.width, player.height); }
+            function drawBullets() { ctx.fillStyle = '#FF0000'; bullets.forEach(b => ctx.fillRect(b.x, b.y, b.width, b.height)); }
+            function drawCentipede() { ctx.fillStyle = '#00FF00'; centipede.forEach(seg => ctx.fillRect(seg.x, seg.y, seg.size, seg.size)); }
+
+            function movePlayer() { if (player.movingLeft && player.x > 0) player.x -= player.speed; if (player.movingRight && player.x + player.width < canvas.width) player.x += player.speed; }
+            function moveBullets() { bullets.forEach(b => b.y -= 5); bullets = bullets.filter(b => b.y > 0); }
+
+            function moveCentipede() {
+                centipede.forEach((segment, index) => {
+                    if (index % 5 === 0) segment.y += 10;
+                    segment.x += segment.direction * 1.5;
+                    if (segment.x <= 0 || segment.x + segment.size >= canvas.width) {
+                        segment.direction *= -1;
+                        segment.y += 10;
+                    }
+                    if (segment.y + segment.size >= player.y) gameOver();
+                });
+            }
+
+            function checkCollisions() {
+                bullets.forEach((bullet, bIndex) => {
+                    centipede.forEach((segment, cIndex) => {
+                        if (bullet.x < segment.x + segment.size && bullet.x + bullet.width > segment.x && bullet.y < segment.y + segment.size && bullet.y + bullet.height > segment.y) {
+                            bullets.splice(bIndex, 1);
+                            centipede.splice(cIndex, 1);
+                            score += 10;
+                        }
+                    });
+                });
+            }
+
+            function gameOver() { gameRunning = false; gameOverScreen.style.display = 'block'; finalScoreText.innerText = `Dein Score: ${score}`; saveScore(); }
+            function saveScore() { fetch('/save_score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ score: score, game: 'helldivers_centipede' }) }); }
+
+            function spawnCentipede() { 
+                for (let i = 0; i < 15; i++) {
+                    centipede.push({ x: i * 40, y: 20 * Math.floor(i / 5), size: 20, speed: 2, direction: 1 }); // Verteilt Segmente in Reihen
+                }
+            }
+
+            function updateScore() { scoreBoard.innerText = `Score: ${score}`; }
+
+            function gameLoop() {
+                if (!gameRunning) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                movePlayer(); moveBullets(); moveCentipede(); checkCollisions();
+                drawPlayer(); drawBullets(); drawCentipede(); updateScore();
+                requestAnimationFrame(gameLoop);
+            }
+
+            document.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') player.movingLeft = true; if (e.key === 'ArrowRight') player.movingRight = true; if (e.key === ' ') bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10, speed: 5 }); });
+            document.addEventListener('keyup', (e) => { if (e.key === 'ArrowLeft') player.movingLeft = false; if (e.key === 'ArrowRight') player.movingRight = false; });
+
+            restartButton.addEventListener('click', () => { player.x = canvas.width / 2 - 15; bullets = []; centipede = []; score = 0; gameRunning = true; gameOverScreen.style.display = 'none'; spawnCentipede(); gameLoop(); });
+            spawnCentipede(); gameLoop();
+        });
+    </script>
+</body>
+</html>

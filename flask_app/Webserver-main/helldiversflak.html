@@ -162,7 +162,22 @@
             }
 
             function gameOver() { gameRunning = false; gameOverScreen.style.display = 'block'; finalScoreText.innerText = `Dein Score: ${score}`; saveScore(); }
-            function saveScore() { fetch('/save_score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ score: score, game: 'helldivers_centipede' }) }); }
+
+            function saveScore() {
+                fetch('/save_score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: score, game: 'hellcentipede' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Score erfolgreich gespeichert:', data);
+                    fetch('/get_all_highscores')
+                        .then(response => response.json())
+                        .then(data => updateAllHighscores(data));
+                })
+                .catch(error => console.error('Fehler beim Speichern des Scores:', error));
+            }
 
             function spawnCentipede(rowCount = 5) { 
                 centipedeRows = [];
@@ -197,4 +212,3 @@
     </script>
 </body>
 </html>
-m

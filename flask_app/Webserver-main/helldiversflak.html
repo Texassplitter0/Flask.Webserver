@@ -30,6 +30,14 @@
             font-size: 24px;
         }
 
+        #roundBoard {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #FFD700;
+            font-size: 24px;
+        }
+
         #gameOverScreen {
             display: none;
             position: absolute;
@@ -60,6 +68,7 @@
 </head>
 <body>
     <div id="scoreBoard">Score: 0</div>
+    <div id="roundBoard">Runde: 1</div>
     <canvas id="gameCanvas" width="800" height="800"></canvas>
 
     <div id="gameOverScreen">
@@ -74,53 +83,90 @@
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const scoreBoard = document.getElementById('scoreBoard');
+            const roundBoard = document.getElementById('roundBoard');
             const gameOverScreen = document.getElementById('gameOverScreen');
             const finalScoreText = document.getElementById('finalScore');
             const restartButton = document.getElementById('restartButton');
 
             let player = { x: canvas.width / 2 - 15, y: canvas.height - 50, width: 30, height: 30, speed: 5, movingLeft: false, movingRight: false };
             let bullets = [];
-            let centipede = [];
+            let enemyBullets = [];
+            let centipedeRows = [];
             let score = 0;
             let gameRunning = true;
+            let speedMultiplier = 1;
+            let round = 1;
+            let shootFrequency = 500;
 
             function drawPlayer() { ctx.fillStyle = '#FFD700'; ctx.fillRect(player.x, player.y, player.width, player.height); }
             function drawBullets() { ctx.fillStyle = '#FF0000'; bullets.forEach(b => ctx.fillRect(b.x, b.y, b.width, b.height)); }
-            function drawCentipede() { ctx.fillStyle = '#00FF00'; centipede.forEach(seg => ctx.fillRect(seg.x, seg.y, seg.size, seg.size)); }
+            function drawEnemyBullets() { ctx.fillStyle = '#00FFFF'; enemyBullets.forEach(b => ctx.fillRect(b.x, b.y, b.width, b.height)); }
+            function drawCentipede() { ctx.fillStyle = '#00FF00'; centipedeRows.forEach(row => row.forEach(seg => ctx.fillRect(seg.x, seg.y, seg.size, seg.size))); }
 
             function movePlayer() { if (player.movingLeft && player.x > 0) player.x -= player.speed; if (player.movingRight && player.x + player.width < canvas.width) player.x += player.speed; }
             function moveBullets() { bullets.forEach(b => b.y -= 5); bullets = bullets.filter(b => b.y > 0); }
+            function moveEnemyBullets() { enemyBullets.forEach(b => b.y += 3); enemyBullets = enemyBullets.filter(b => b.y < canvas.height); }
 
             function moveCentipede() {
-                centipede.forEach((segment, index) => {
-                    if (index % 5 === 0) segment.y += 10;
-                    segment.x += segment.direction * 1.5;
-                    if (segment.x <= 0 || segment.x + segment.size >= canvas.width) {
-                        segment.direction *= -1;
-                        segment.y += 10;
+                centipedeRows.forEach(row => {
+                    let leftMost = Math.min(...row.map(seg => seg.x));
+                    let rightMost = Math.max(...row.map(seg => seg.x + seg.size));
+                    if (leftMost <= 0 || rightMost >= canvas.width) {
+                        row.forEach(segment => { segment.direction *= -1; segment.y += 20; });
                     }
-                    if (segment.y + segment.size >= player.y) gameOver();
+                    row.forEach(segment => { segment.x += segment.direction * 1.5 * speedMultiplier; });
+                });
+                centipedeRows.flat().forEach(segment => { if (segment.y + segment.size >= player.y) gameOver(); });
+            }
+
+            function shootFromEnemies() {
+                centipedeRows.forEach(row => {
+                    if (Math.random() < 0.05 * round) {
+                        let shooter = row[Math.floor(Math.random() * row.length)];
+                        enemyBullets.push({ x: shooter.x + shooter.size / 2 - 2, y: shooter.y + shooter.size, width: 4, height: 10 });
+                    }
                 });
             }
 
             function checkCollisions() {
                 bullets.forEach((bullet, bIndex) => {
-                    centipede.forEach((segment, cIndex) => {
-                        if (bullet.x < segment.x + segment.size && bullet.x + bullet.width > segment.x && bullet.y < segment.y + segment.size && bullet.y + bullet.height > segment.y) {
-                            bullets.splice(bIndex, 1);
-                            centipede.splice(cIndex, 1);
-                            score += 10;
-                        }
+                    centipedeRows.forEach((row, rIndex) => {
+                        row.forEach((segment, cIndex) => {
+                            if (bullet.x < segment.x + segment.size && bullet.x + bullet.width > segment.x && bullet.y < segment.y + segment.size && bullet.y + bullet.height > segment.y) {
+                                bullets.splice(bIndex, 1);
+                                row.splice(cIndex, 1);
+                                score += 10;
+                            }
+                        });
                     });
                 });
+                enemyBullets.forEach((bullet, bIndex) => {
+                    if (bullet.x < player.x + player.width && bullet.x + bullet.width > player.x && bullet.y < player.y + player.height && bullet.y + bullet.height > player.y) {
+                        gameOver();
+                    }
+                });
+                if (centipedeRows.flat().length === 0) { 
+                    round++;
+                    speedMultiplier += 0.2;
+                    if (round % 2 === 0) shootFrequency -= 50; 
+                    if (round % 2 === 0) spawnCentipede(round + 5); 
+                    else spawnCentipede(5 + round);
+                    roundBoard.innerText = `Runde: ${round}`;
+                }
             }
 
             function gameOver() { gameRunning = false; gameOverScreen.style.display = 'block'; finalScoreText.innerText = `Dein Score: ${score}`; saveScore(); }
             function saveScore() { fetch('/save_score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ score: score, game: 'helldivers_centipede' }) }); }
 
-            function spawnCentipede() { 
-                for (let i = 0; i < 15; i++) {
-                    centipede.push({ x: i * 40, y: 20 * Math.floor(i / 5), size: 20, speed: 2, direction: 1 }); // Verteilt Segmente in Reihen
+            function spawnCentipede(rowCount = 5) { 
+                centipedeRows = [];
+                for (let r = 0; r < rowCount; r++) {
+                    let row = [];
+                    let direction = r % 2 === 0 ? 1 : -1; 
+                    for (let i = 0; i < 10; i++) {
+                        row.push({ x: 40 + i * 40, y: 60 + r * 30, size: 20, speed: 2, direction: direction });
+                    }
+                    centipedeRows.push(row);
                 }
             }
 
@@ -129,15 +175,17 @@
             function gameLoop() {
                 if (!gameRunning) return;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                movePlayer(); moveBullets(); moveCentipede(); checkCollisions();
-                drawPlayer(); drawBullets(); drawCentipede(); updateScore();
+                movePlayer(); moveBullets(); moveEnemyBullets(); moveCentipede(); checkCollisions();
+                drawPlayer(); drawBullets(); drawEnemyBullets(); drawCentipede(); updateScore();
                 requestAnimationFrame(gameLoop);
             }
 
             document.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') player.movingLeft = true; if (e.key === 'ArrowRight') player.movingRight = true; if (e.key === ' ') bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10, speed: 5 }); });
             document.addEventListener('keyup', (e) => { if (e.key === 'ArrowLeft') player.movingLeft = false; if (e.key === 'ArrowRight') player.movingRight = false; });
 
-            restartButton.addEventListener('click', () => { player.x = canvas.width / 2 - 15; bullets = []; centipede = []; score = 0; gameRunning = true; gameOverScreen.style.display = 'none'; spawnCentipede(); gameLoop(); });
+            restartButton.addEventListener('click', () => { player.x = canvas.width / 2 - 15; bullets = []; enemyBullets = []; centipedeRows = []; score = 0; speedMultiplier = 1; round = 1; shootFrequency = 500; gameRunning = true; roundBoard.innerText = 'Runde: 1'; gameOverScreen.style.display = 'none'; spawnCentipede(); gameLoop(); });
+
+            setInterval(shootFromEnemies, shootFrequency);
             spawnCentipede(); gameLoop();
         });
     </script>

@@ -287,6 +287,12 @@ def easteregg():
         return render_template('easteregg.html', user=session['user'], role=session.get('role', 'user'))
     return redirect(url_for('index'))
 
+@app.route('/helldiverflak')
+def helldiverflak():
+    if session.get('logged_in'):
+        return render_template('helldiverflak.html', user=session['user'], role=session.get('role', 'user'))
+    return redirect(url_for('index'))
+
 # <---------------------------------------Routes-für-Login/Logout-und-Registrierung--------------------------------------------------------->
 
 

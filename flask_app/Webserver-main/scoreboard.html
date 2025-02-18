@@ -135,13 +135,18 @@
             const highscoreTable = document.getElementById('highscoreTable');
             highscoreTable.innerHTML = '<h2>Highscores</h2>';
     
-            // Sortiere Spiele alphabetisch
-            const sortedGames = Object.keys(data).sort();
+            const gameNames = {
+                'catch_the_bug': 'Catch the Bug',
+                'flyingengineer': 'Flying Engineer',
+                'helldiver_centipede': 'Helldiver Centipede'
+            };
     
-            sortedGames.forEach(game => {
+            const games = Object.keys(data);
+    
+            games.forEach(game => {
                 const gameDiv = document.createElement('div');
                 gameDiv.classList.add('game-section');
-                gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
+                gameDiv.innerHTML = `<h3>${gameNames[game] || game}</h3>`;
     
                 const table = document.createElement('table');
                 table.innerHTML = '<tr><th>Platz</th><th>Benutzername</th><th>Score</th></tr>';
@@ -157,14 +162,6 @@
             });
         }
     
-        function formatGameName(gameKey) {
-            const gameNames = {
-                'catch_the_bug': 'Catch the Bug',
-                'flyingengineer': 'Flying Engineer'
-            };
-            return gameNames[gameKey] || gameKey;
-        }
-    
         fetch('/get_all_highscores')
             .then(response => {
                 if (!response.ok) {
@@ -175,5 +172,6 @@
             .then(data => updateAllHighscores(data))
             .catch(error => console.error('Fehler beim Abrufen der Highscores:', error));
     </script>
+    
 </body>
 </html>

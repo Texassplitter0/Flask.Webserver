@@ -115,7 +115,6 @@
 
     <main>
         <div class="box">
-            <h2>Catch the Bug</h2>
             <div id="highscoreTable"></div>
         </div>
         <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
@@ -131,43 +130,50 @@
     </footer>
 
     <script>
-    function updateAllHighscores(data) {
-        console.log('Empfangene Highscore-Daten:', data);
-        const highscoreTable = document.getElementById('highscoreTable');
-        highscoreTable.innerHTML = '<h2>Highscores:</h2>';
-
-        for (const [game, scores] of Object.entries(data)) {
-            const gameDiv = document.createElement('div');
-            gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
-
-            scores.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.innerText = `${entry.username}: ${entry.score}`;
-                gameDiv.appendChild(entryDiv);
+        function updateAllHighscores(data) {
+            console.log('Empfangene Highscore-Daten:', data);
+            const highscoreTable = document.getElementById('highscoreTable');
+            highscoreTable.innerHTML = '<h2>Highscores</h2>';
+    
+            // Sortiere Spiele alphabetisch
+            const sortedGames = Object.keys(data).sort();
+    
+            sortedGames.forEach(game => {
+                const gameDiv = document.createElement('div');
+                gameDiv.classList.add('game-section');
+                gameDiv.innerHTML = `<h3>${formatGameName(game)}</h3>`;
+    
+                const table = document.createElement('table');
+                table.innerHTML = '<tr><th>Platz</th><th>Benutzername</th><th>Score</th></tr>';
+    
+                data[game].forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${index + 1}</td><td>${entry.username}</td><td>${entry.score}</td>`;
+                    table.appendChild(row);
+                });
+    
+                gameDiv.appendChild(table);
+                highscoreTable.appendChild(gameDiv);
             });
-
-            highscoreTable.appendChild(gameDiv);
         }
-    }
-
-    function formatGameName(gameKey) {
-        const gameNames = {
-            'catch_the_bug': 'Catch the Bug',
-            'flyingengineer': 'Flying Engineer'
-        };
-        return gameNames[gameKey] || gameKey;
-    }
-
-    fetch('/get_all_highscores')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Netzwerkantwort war nicht ok');
-            }
-            return response.json();
-        })
-        .then(data => updateAllHighscores(data))
-        .catch(error => console.error('Fehler beim Abrufen der Highscores:', error));
-
+    
+        function formatGameName(gameKey) {
+            const gameNames = {
+                'catch_the_bug': 'Catch the Bug',
+                'flyingengineer': 'Flying Engineer'
+            };
+            return gameNames[gameKey] || gameKey;
+        }
+    
+        fetch('/get_all_highscores')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok');
+                }
+                return response.json();
+            })
+            .then(data => updateAllHighscores(data))
+            .catch(error => console.error('Fehler beim Abrufen der Highscores:', error));
     </script>
 </body>
 </html>

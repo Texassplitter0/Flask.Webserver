@@ -126,7 +126,17 @@
             }
 
             function updateAsteroids() {
-                asteroids.forEach(asteroid => asteroid.y += asteroid.speed);
+                asteroids.forEach(asteroid => {
+                    asteroid.y += asteroid.speed;
+                    if (
+                        spaceship.x < asteroid.x + asteroid.radius &&
+                        spaceship.x + spaceship.width > asteroid.x - asteroid.radius &&
+                        spaceship.y < asteroid.y + asteroid.radius &&
+                        spaceship.y + spaceship.height > asteroid.y - asteroid.radius
+                    ) {
+                        gameOver();
+                    }
+                });
                 asteroids = asteroids.filter(asteroid => asteroid.y < canvas.height);
             }
     

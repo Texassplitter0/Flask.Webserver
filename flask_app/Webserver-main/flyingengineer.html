@@ -75,7 +75,7 @@
 <body>
     <div id="scoreBoard">Score: 0</div>
     <div id="timer">Zeit: 0s</div>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <canvas id="gameCanvas" width="800" height="800"></canvas>
 
     <div id="gameOverScreen">
         <h1>Game Over</h1>
@@ -96,17 +96,18 @@
             const finalTimeText = document.getElementById('finalTime');
             const restartButton = document.getElementById('restartButton');
     
-            let spaceship = { x: canvas.width / 2 - 25, y: canvas.height - 70, width: 50, height: 50, speed: 5, movingLeft: false, movingRight: false };
+            let spaceship = { x: canvas.width / 2 - 25, y: canvas.height - 80, width: 50, height: 50, speed: 5, movingLeft: false, movingRight: false };
             let asteroids = [];
             let score = 0;
             let gameRunning = true;
             let startTime, elapsedTime = 0;
             let asteroidSpeed = 2;
     
+            const spaceshipImg = new Image();
+            spaceshipImg.src = 'images/spaceship.png';
+    
             function drawSpaceship() {
-                const img = new Image();
-                img.src = 'images/spaceship.png';
-                img.onload = () => ctx.drawImage(img, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
+                ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
     
             function drawAsteroids() {

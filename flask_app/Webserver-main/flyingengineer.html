@@ -111,41 +111,28 @@
                 ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
     
-            function drawAsteroids() {
-                ctx.fillStyle = 'gray';
-                asteroids.forEach(asteroid => {
-                    ctx.beginPath();
-                    ctx.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            }
-    
             function moveSpaceship() {
                 if (spaceship.movingLeft && spaceship.x > 0) spaceship.x -= spaceship.speed;
                 if (spaceship.movingRight && spaceship.x + spaceship.width < canvas.width) spaceship.x += spaceship.speed;
             }
-    
-            function updateAsteroids() {
-                asteroids.forEach(asteroid => asteroid.y += asteroid.speed);
-                asteroids = asteroids.filter(asteroid => asteroid.y < canvas.height);
-            }
 
-            function spawnAsteroid() {
-                const x = Math.random() * (canvas.width - 20) + 10;
-                const radius = Math.random() * 20 + 10;
-                const speed = Math.random() * 2 + 1;
-                asteroids.push({ x, y: -radius, radius, speed });
-            }
-    
             function gameLoop() {
                 if (!gameRunning) return;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawSpaceship();
-                drawAsteroids();
                 moveSpaceship();
-                updateAsteroids();
+                drawSpaceship();
                 requestAnimationFrame(gameLoop);
             }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
+                if (e.key === 'ArrowRight') spaceship.movingRight = true;
+            });
+    
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
+                if (e.key === 'ArrowRight') spaceship.movingRight = false;
+            });
     
             function startGame() {
                 gameRunning = true;
@@ -156,7 +143,6 @@
                     elapsedTime++;
                     timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
                 }, 1000);
-                setInterval(spawnAsteroid, 1000);
                 gameLoop();
             }
     

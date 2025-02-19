@@ -7,14 +7,10 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e2f;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #3a3d50);
             color: #ffffff;
             text-align: center;
-            background-image: url('images/BG-DönerHub-Siegel.webp');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
         }
         nav {
             display: flex;
@@ -31,63 +27,69 @@
             text-decoration: none;
             padding: 10px 20px;
             font-weight: bold;
-            display: inline-block;
         }
         nav a:hover {
             background-color: #444;
             border-radius: 5px;
         }
         header {
-            background-color: #FFD700;
-            padding: 20px;
+            background: linear-gradient(135deg, #FFD700, #ffb700);
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
         }
         header h1, header h2 {
             margin: 0;
             color: #2C2C2C;
         }
-        header h2 {
-            margin-top: 10px;
-        }
         main {
             padding: 20px;
         }
         .box {
-            background-color: #333;
-            color: #FFD700;
+            background: rgba(51, 51, 51, 0.9);
+            color: #000000;
             border-radius: 10px;
             padding: 40px;
             max-width: 800px;
             margin: 20px auto;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-        .box::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-        }
-        .box * {
-            position: relative;
-            z-index: 1;
         }
         .cta {
             display: inline-block;
             text-decoration: none;
-            padding: 10px 20px;
-            background-color: #FFD700;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FFD700, #ffb700);
             color: #333;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: bold;
-            margin-top: 10px;
+            transition: all 0.3s ease;
         }
         .cta:hover {
-            background-color: #ffb700;
+            background: linear-gradient(135deg, #ffe066, #ffc107);
+        }
+        .highlight {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: black;
+            text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
+            border: 2px solid #FFD700;
+            padding: 5px;
+            display: inline-block;
+            border-radius: 5px;
+            background: rgba(255, 215, 0, 0.8);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #FFD700;
+            text-align: center;
+        }
+        th {
+            background: #444;
         }
         footer {
             background-color: #000000;
@@ -95,6 +97,12 @@
             text-align: center;
             padding: 1em 0;
             font-size: 0.9em;
+            margin-top: 20px;
+        }
+        .community-box {
+            background-image: url('images/community-bg-gamedivers.webp');
+            background-position: center;
+            background-size: cover;
         }
     </style>
 </head>
@@ -110,15 +118,15 @@
 
     <header>
         <h1>Scoreboards</h1>
-        <h2>Die Scoreboards unserer Minigames für die die es interresiert</h2>
+        <h2>Die Scoreboards unserer Minigames für die, die es interessiert</h2>
     </header>
 
     <main>
         <div class="box">
             <div id="highscoreTable"></div>
         </div>
-        <div class="box" style="background-image: url('images/community-bg-gamedivers.webp');">
-            <h2>Community</h2>
+        <div class="box community-box">
+            <h2 class="highlight">Community</h2>
             <p>Treten Sie unserer freundlichen und aktiven Community bei!</p>
             <a href="https://discord.gg/ihre-invite-id" target="_blank" class="cta">Jetzt beitreten</a>
         </div>
@@ -134,44 +142,35 @@
             console.log('Empfangene Highscore-Daten:', data);
             const highscoreTable = document.getElementById('highscoreTable');
             highscoreTable.innerHTML = '<h2>Highscores</h2>';
-    
+            
             const gameNames = {
                 'catch_the_bug': 'Catch the Bug',
                 'flyingengineer': 'Flying Engineer',
                 'helldiver_centipede': 'Helldiver Centipede'
             };
-    
-            const games = Object.keys(data);
-    
-            games.forEach(game => {
+            
+            Object.keys(data).forEach(game => {
                 const gameDiv = document.createElement('div');
-                gameDiv.classList.add('game-section');
                 gameDiv.innerHTML = `<h3>${gameNames[game] || game}</h3>`;
-    
+                
                 const table = document.createElement('table');
                 table.innerHTML = '<tr><th>Platz</th><th>Benutzername</th><th>Score</th></tr>';
-    
+                
                 data[game].forEach((entry, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `<td>${index + 1}</td><td>${entry.username}</td><td>${entry.score}</td>`;
                     table.appendChild(row);
                 });
-    
+                
                 gameDiv.appendChild(table);
                 highscoreTable.appendChild(gameDiv);
             });
         }
-    
+
         fetch('/get_all_highscores')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Netzwerkantwort war nicht ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => updateAllHighscores(data))
             .catch(error => console.error('Fehler beim Abrufen der Highscores:', error));
     </script>
-    
 </body>
 </html>

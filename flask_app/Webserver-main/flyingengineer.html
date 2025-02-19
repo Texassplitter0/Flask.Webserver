@@ -149,33 +149,29 @@
                 finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
             }
     
+            function gameLoop() {
+                if (!gameRunning) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawSpaceship();
+                drawAsteroids();
+                moveSpaceship();
+                updateAsteroids();
+                detectCollision();
+                score++;
+                scoreBoard.innerText = `Score: ${score}`;
+                requestAnimationFrame(gameLoop);
+            }
+            
             function startGame() {
-                spaceship.x = canvas.width / 2 - 25;
-                spaceship.y = canvas.height - 80;
-                asteroids = [];
+                gameRunning = true;
                 score = 0;
                 elapsedTime = 0;
-                startTime = Date.now();
-                timerDisplay.innerText = `Zeit: 0s`;
-                scoreBoard.innerText = `Score: 0`;
-                gameRunning = true;
-                gameOverScreen.style.display = 'none';
                 timerInterval = setInterval(() => {
                     elapsedTime++;
                     timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
                 }, 1000);
                 gameLoop();
             }
-    
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
-                if (e.key === 'ArrowRight') spaceship.movingRight = true;
-            });
-    
-            document.addEventListener('keyup', (e) => {
-                if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
-                if (e.key === 'ArrowRight') spaceship.movingRight = false;
-            });
     
             restartButton.addEventListener('click', startGame);
             startGame();

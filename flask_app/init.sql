@@ -17,9 +17,21 @@ CREATE TABLE IF NOT EXISTS registration_requests (
     email VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS game_db (
+CREATE TABLE IF NOT EXISTS catch_the_bug (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    score INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS flyingengineer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    score INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS helldivers_centipede (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
     score INT NOT NULL
 );
 

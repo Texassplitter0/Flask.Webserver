@@ -111,61 +111,34 @@
                 ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
     
-            function drawAsteroids() {
-                ctx.fillStyle = 'gray';
-                asteroids.forEach(asteroid => {
-                    ctx.beginPath();
-                    ctx.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            }
-    
             function moveSpaceship() {
                 if (spaceship.movingLeft && spaceship.x > 0) spaceship.x -= spaceship.speed;
                 if (spaceship.movingRight && spaceship.x + spaceship.width < canvas.width) spaceship.x += spaceship.speed;
             }
     
-            function updateAsteroids() {
-                asteroids.forEach(asteroid => asteroid.y += asteroid.speed);
-                asteroids = asteroids.filter(asteroid => asteroid.y < canvas.height);
-            }
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
+                if (e.key === 'ArrowRight') spaceship.movingRight = true;
+            });
     
-            function detectCollision() {
-                for (let asteroid of asteroids) {
-                    if (spaceship.x < asteroid.x + asteroid.radius &&
-                        spaceship.x + spaceship.width > asteroid.x - asteroid.radius &&
-                        spaceship.y < asteroid.y + asteroid.radius &&
-                        spaceship.y + spaceship.height > asteroid.y - asteroid.radius) {
-                        gameOver();
-                    }
-                }
-            }
-    
-            function gameOver() {
-                gameRunning = false;
-                clearInterval(timerInterval);
-                gameOverScreen.style.display = 'block';
-                finalScoreText.innerText = `Dein Score: ${score}`;
-                finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
-            }
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
+                if (e.key === 'ArrowRight') spaceship.movingRight = false;
+            });
     
             function gameLoop() {
                 if (!gameRunning) return;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawSpaceship();
-                drawAsteroids();
                 moveSpaceship();
-                updateAsteroids();
-                detectCollision();
-                score++;
-                scoreBoard.innerText = `Score: ${score}`;
                 requestAnimationFrame(gameLoop);
             }
-            
+    
             function startGame() {
                 gameRunning = true;
                 score = 0;
                 elapsedTime = 0;
+                gameOverScreen.style.display = 'none';
                 timerInterval = setInterval(() => {
                     elapsedTime++;
                     timerDisplay.innerText = `Zeit: ${elapsedTime}s`;

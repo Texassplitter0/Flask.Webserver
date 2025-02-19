@@ -167,7 +167,7 @@
                 fetch('/save_score', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ score: score, game: 'hellcentipede' })
+                    body: JSON.stringify({ score: score, game: 'helldivers_centipede' })
                 })
                 .then(response => response.json())
                 .then(data => {

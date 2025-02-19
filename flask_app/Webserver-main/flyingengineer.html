@@ -107,6 +107,20 @@
             const spaceshipImg = new Image();
             spaceshipImg.src = 'images/spaceship.png';
     
+            function startGame() {
+                gameRunning = true;
+                score = 0;
+                elapsedTime = 0;
+                asteroids = [];
+                gameOverScreen.style.display = 'none';
+                timerInterval = setInterval(() => {
+                    elapsedTime++;
+                    timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
+                }, 1000);
+                setInterval(spawnAsteroid, 1000);
+                gameLoop();
+            }
+            
             function drawSpaceship() {
                 ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
@@ -154,6 +168,8 @@
                 drawSpaceship();
                 drawAsteroids();
                 updateAsteroids();
+                score++;
+                scoreBoard.innerText = `Score: ${score}`;
                 requestAnimationFrame(gameLoop);
             }
 
@@ -167,21 +183,16 @@
                 if (e.key === 'ArrowRight') spaceship.movingRight = false;
             });
     
-            function startGame() {
-                gameRunning = true;
-                score = 0;
-                elapsedTime = 0;
-                asteroids = [];
-                gameOverScreen.style.display = 'none';
-                timerInterval = setInterval(() => {
-                    elapsedTime++;
-                    timerDisplay.innerText = `Zeit: ${elapsedTime}s`;
-                }, 1000);
-                setInterval(spawnAsteroid, 1000);
-                gameLoop();
+            function gameOver() {
+                gameRunning = false;
+                clearInterval(timerInterval);
+                gameOverScreen.style.display = 'block';
+                finalScoreText.innerText = `Dein Score: ${score}`;
+                finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
             }
     
             restartButton.addEventListener('click', startGame);
+            setInterval(spawnAsteroid, 1000);
             startGame();
         });
     </script>

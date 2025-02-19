@@ -120,7 +120,7 @@
                 setInterval(spawnAsteroid, 1000);
                 gameLoop();
             }
-            
+
             function drawSpaceship() {
                 ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
             }
@@ -183,12 +183,27 @@
                 if (e.key === 'ArrowRight') spaceship.movingRight = false;
             });
     
+            function saveScore() {
+               fetch('/save_score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: score, game: 'flyingengineer' }) // Richtigen Spielnamen setzen
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Score erfolgreich gespeichert:', data);
+                })
+                .catch(error => console.error('Fehler beim Speichern des Scores:', error));
+            }
+
             function gameOver() {
                 gameRunning = false;
                 clearInterval(timerInterval);
                 gameOverScreen.style.display = 'block';
                 finalScoreText.innerText = `Dein Score: ${score}`;
                 finalTimeText.innerText = `Überlebenszeit: ${elapsedTime}s`;
+
+                saveScore();
             }
     
             restartButton.addEventListener('click', startGame);

@@ -53,13 +53,13 @@
         <h1>Willkommen, {{ user }}</h1>
         <p>Du bist als {{ role }} eingeloggt.</p>
 
-        <a href="{{ url_for('logout') }}">Logout</a>  
+        <a href="{{ url_for('welcome') }}">Startseite</a>  
 
         {% if role == "admin" %}
             <a href="{{ url_for('adminpanel') }}">Admin-Panel</a>
         {% endif %}
 
-        <a href="{{ url_for('welcome') }}">Startseite</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
     </div>
 </body>
 </html>

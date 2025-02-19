@@ -49,13 +49,15 @@ def create_database():
                     email VARCHAR(50) NOT NULL
                 );
             """)
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS game_db (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    username VARCHAR(50) UNIQUE NOT NULL,
-                    score INT NOT NULL
-                );
-            """)
+            minigames = ["catch_the_bug", "flyingengineer", "helldivers_centipede"]
+            for game in minigames:
+                cursor.execute(f"""
+                    CREATE TABLE IF NOT EXISTS {game} (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        username VARCHAR(50) NOT NULL,
+                        score INT NOT NULL
+                    );
+                """)
             cursor.execute("""
                 INSERT INTO users (username, password, email, role) 
                 VALUES ('Admin', 'pbkdf2:sha256:1000000$z6xQxoW6plIVe6fV$a009a43c68c63247682d0e493ced3c7d978f2e7dd9c0fbf62b12ce0371e0a019', 'admin@gamedivers.de', 'admin')
@@ -508,23 +510,29 @@ def save_score():
         return jsonify({'error': 'Benutzer nicht eingeloggt'}), 403
 
     data = request.get_json()
-    username = session['user']  # Benutzername aus der Session abrufen
+    username = session['user']
     score = data['score']
-    game = data.get('game', 'catch_the_bug')  # Standardspielname
+    game = data.get('game')
+
+    # Sicherheitscheck: Verhindere SQL-Injection
+    allowed_games = ["catch_the_bug", "flyingengineer", "helldivers_centipede"]
+    if game not in allowed_games:
+        return jsonify({'error': 'Ungültiges Spiel'}), 400
 
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Speichere den Score in der Datenbank
+    # Score in die jeweilige Minigame-Tabelle speichern
     cur.execute(
-        'INSERT INTO game_db (username, score, game) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE score = GREATEST(score, VALUES(score))',
-        (username, score, game)
+        f'INSERT INTO {game} (username, score) VALUES (%s, %s) '
+        'ON DUPLICATE KEY UPDATE score = GREATEST(score, VALUES(score))',
+        (username, score)
     )
 
     conn.commit()
     cur.close()
     conn.close()
-    
+
     return jsonify({'message': 'Score erfolgreich gespeichert'})
 
 
@@ -546,33 +554,23 @@ def get_all_highscores():
         conn = get_db_connection()
         cur = conn.cursor(dictionary=True)
 
-        # Sicherstellen, dass die Spalte 'game' existiert
-        cur.execute('SHOW COLUMNS FROM game_db LIKE "game"')
-        result = cur.fetchone()
-        if not result:
-            cur.execute('ALTER TABLE game_db ADD COLUMN game VARCHAR(50) DEFAULT "catch_the_bug"')
+        minigames = ["catch_the_bug", "flyingengineer", "helldivers_centipede"]
+        grouped_highscores = {}
 
-        # Abfrage der Highscores inkl. Spielnamen aus der Datenbank
-        cur.execute('SELECT game, username, score FROM game_db ORDER BY game, score DESC')
-        highscores = cur.fetchall()
+        for game in minigames:
+            cur.execute(f'SELECT username, score FROM {game} ORDER BY score DESC LIMIT 10')
+            highscores = cur.fetchall()
+            grouped_highscores[game] = highscores
 
         cur.close()
         conn.close()
 
-        # Gruppierung der Highscores nach Spiel
-        grouped_highscores = {}
-        for entry in highscores:
-            game = entry['game']
-            if game not in grouped_highscores:
-                grouped_highscores[game] = []
-            grouped_highscores[game].append({'username': entry['username'], 'score': entry['score']})
-
-        # Rueckgabe der Highscores als JSON
         return jsonify(grouped_highscores)
 
     except Exception as e:
         print(f"Fehler beim Abrufen der Highscores: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @app.after_request
 def add_header(response):

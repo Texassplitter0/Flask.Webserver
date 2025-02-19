@@ -146,6 +146,16 @@
                 updateAsteroids();
                 requestAnimationFrame(gameLoop);
             }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = true;
+                if (e.key === 'ArrowRight') spaceship.movingRight = true;
+            });
+    
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft') spaceship.movingLeft = false;
+                if (e.key === 'ArrowRight') spaceship.movingRight = false;
+            });
     
             function startGame() {
                 gameRunning = true;

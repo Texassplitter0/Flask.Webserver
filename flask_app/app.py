@@ -540,7 +540,7 @@ def save_score():
 def get_highscores():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
-    cur.execute('SELECT username, score FROM highscores ORDER BY score DESC LIMIT 10')
+    cur.execute('SELECT username, score FROM highscores ORDER BY score DESC LIMIT 3')
     highscores = cur.fetchall()
     cur.close()
     conn.close()

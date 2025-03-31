@@ -2,3 +2,6 @@ Disallow: /admin.html
 Disallow: /edit.user.html
 Disallow: /profile.html
 Disallow: /registration.html
+
+# Sitemap angeben (SEO-relevant)
+Sitemap: https://gamedivers.de/sitemap.xml

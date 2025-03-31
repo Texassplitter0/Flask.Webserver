@@ -1,1 +1,4 @@
-
+Disallow: /admin.html
+Disallow: /edit.user.html
+Disallow: /profile.html
+Disallow: /registration.html

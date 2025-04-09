@@ -19,11 +19,11 @@ services:
       - main
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.game.rule=Host(`gamediver.de`)"
+      - "traefik.http.routers.game.rule=Host(`dönerhub-gamediver.de`)"
       - "traefik.http.routers.game.entrypoints=web-secure"
       - "traefik.http.routers.game.tls=true"
       - "traefik.http.routers.game.tls.certresolver=cloudflare"
-      - "traefik.http.routers.game.tls.domains[2].main=gamediver.de"
+      - "traefik.http.routers.game.tls.domains[2].main=dönerhub-gamediver.de"
       - "traefik.http.routers.game.service=gameService"
       - "traefik.http.services.gameService.loadBalancer.server.port=5000"
 
